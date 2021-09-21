@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/20 17:07:53 by amarcell          #+#    #+#             */
-/*   Updated: 2021/09/20 19:11:47 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/09/21 15:15:52 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@
 
 namespace ft
 {
+	
 	template < class T, class Alloc = std::allocator<T> >
 	class Vector
 	{
+
 	private:
+
 		T value_type;
 		Alloc
 	public:
@@ -31,6 +34,7 @@ namespace ft
 	
 	Vector::Vector(/* args */)
 	{
+		std::pair
 	}
 	
 	Vector::~Vector()
