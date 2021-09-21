@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 17:15:47 by amarcell          #+#    #+#             */
-/*   Updated: 2021/09/21 19:30:00 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/09/21 19:51:03 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,13 @@ namespace ft
 			ptr--;
 			return (*this);
 		}
-		VectorIterator operator++(int)
+		virtual VectorIterator operator++(int)
 		{
 			VectorIterator tmp(*this);
 			operator++();
 			return (tmp);
 		}
-		VectorIterator operator--(int)
+		virtual VectorIterator operator--(int)
 		{
 			VectorIterator tmp(*this);
 			operator--();
@@ -201,15 +201,32 @@ namespace ft
 			ReverseVectorIterator(ConstReverseVectorIterator<T> other) : VectorIterator<T>(other){}
 			~ReverseVectorIterator(){}
 			
-			VectorIterator<T> & operator++()
+			VectorIterator<T> & operator++()	//per forza riscritti se no problemi di ridondanza
 			{
-				return (VectorIterator<T>::operator--());
+				this->ptr = this->ptr - 1;
+				return (*this);
 			}	
 			VectorIterator<T> & operator--()
 			{
-				return (VectorIterator<T>::operator++());
+				this->ptr = this->ptr + 1;
+				return (*this);
 			}
-			
+
+			VectorIterator operator++(int)
+			{
+				VectorIterator tmp(*this);
+				operator++();
+				return (tmp);
+			}
+
+			VectorIterator operator--(int)
+			{
+				VectorIterator tmp(*this);
+				operator--();
+				return (tmp);
+			}
+
+
 			T  operator[](size_t n) 
 			{
 				return (*(this->ptr - n));
@@ -238,11 +255,13 @@ namespace ft
 			
 			ConstVectorIterator<T> & operator++()
 			{
-				return (ConstVectorIterator<T>::operator--());
+				this->ptr = this->ptr - 1;
+				return (*this);
 			}	
 			ConstVectorIterator<T> & operator--()
 			{
-				return (ConstVectorIterator<T>::operator++());
+				this->ptr = this->ptr + 1;
+				return (*this);
 			}
 			
 			T  operator[](size_t n) const
