@@ -11,63 +11,19 @@ Write your code in this editor and press "Run" button to compile and execute it.
 
 using namespace std;
 
-class A
-{
-    
-    
-    public:
-    int a;
-    
-        A(int _a) :a(_a){}
-       virtual A operator+(int n)
-        {
-            A tmp(*this);
-			tmp.a += n;
-			return (tmp);
-        }
-        virtual A operator-(int n)
-        {
-            A tmp(*this);
-			tmp.a -= n;
-			return (tmp);
-        }
-        A & operator+=(int n)
-		{
-			*this = *this + n;
-			return (*this);
-		}
-		A & operator-=(int n)
-		{
-			*this = *this - n;
-			return (*this);
-		}
-        A & operator=(A const & other)
-		{
-			a = other.a;
-			return (*this);
-		}
-};
-        
-class B : public A
-{
-    public:
-        B(int _a) : A(_a){}
-        A operator+(int n)
-        {
 
-            std::cout << "é +: " << a << "\n";
-			return (A::operator-(n));
-        }
-        A operator-(int n)
-        {
-            return (A::operator+(n));
-        }
-};
 
 int main()
 {
-    B ao(10);
-    std::cout << "AO: " << ao.a << "\n";
-    ao += 1;
-    std::cout << "AO: " << ao.a << "\n";
+	int const a[5] = {1,2,3,4,5};
+	ft::ConstVectorIterator<int> ci(a);
+	ft::ConstReverseVectorIterator<int> cr(&a[4]);
+	ft::ConstVectorIterator<int> i(a);
+	ft::ConstReverseVectorIterator<int> r(&a[4]);
+	std::cout << "CIT: " << ci[0] << " CRIT: " << cr[0] << "\n";
+	std::cout << " IT: " << i[0] << "  RIT: " << r[0] << "\n";
+	std::cout << "---------OPERATOR---------" << "\n";
+	ci++;
+	i++;
+
 }

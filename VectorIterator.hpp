@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 17:15:47 by amarcell          #+#    #+#             */
-/*   Updated: 2021/09/21 16:33:38 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/09/21 19:30:00 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ namespace ft
 	public:
 		VectorIterator() : ptr(NULL) {}
 		VectorIterator(T * _ptr) : ptr(_ptr){}
-		VectorIterator(VectorIterator const & other)
-		{
-			*this = other;
-		}
+		VectorIterator(VectorIterator const & other) : ptr(other.ptr) {}
 		VectorIterator(ConstVectorIterator<T> other) : ptr(other.ptr()){}
 		virtual ~VectorIterator(){}
 
@@ -108,29 +105,30 @@ namespace ft
 		}
 	};
 
-
+	// constant element but u can modify the pointer (read only)
 	template <typename T>
 	class ConstVectorIterator
 	{
 	protected:
-		const T * ptr;
+		T const *ptr;
 	
 	public:
 		ConstVectorIterator() : ptr(NULL) {}
-		ConstVectorIterator(T * _ptr) : ptr(_ptr){}
-		~ConstVectorIterator(){}
+		ConstVectorIterator(T const *_ptr) : ptr(_ptr){}
+		ConstVectorIterator(ConstVectorIterator const & other) : ptr(other.ptr) {}
+		virtual ~ConstVectorIterator(){}
 
 		ConstVectorIterator & operator=(ConstVectorIterator const & other)
 		{
 			ptr = other.ptr;
 			return (*this);
 		}
-		ConstVectorIterator & operator++()
+		virtual ConstVectorIterator & operator++()
 		{
 			ptr++;
 			return (*this);
 		}
-		ConstVectorIterator & operator--()
+		virtual ConstVectorIterator & operator--()
 		{
 			ptr--;
 			return (*this);
@@ -164,23 +162,23 @@ namespace ft
 			return (*ptr);
 		}
 
-		T  operator[](size_t n) const
+		virtual T  operator[](size_t n) const
 		{
 			return (ptr[n]);
 		}
-		ConstVectorIterator operator+(int n) const
+		virtual ConstVectorIterator operator+(int n) const
 		{
 			ConstVectorIterator tmp(*this);
-			tmp += n;
+			tmp.ptr += n;
 			return (tmp);
 		}
-		ConstVectorIterator operator-(int n) const
+		virtual ConstVectorIterator operator-(int n) const
 		{
 			ConstVectorIterator tmp(*this);
-			tmp -= n;
+			tmp.ptr -= n;
 			return (tmp);
 		}
-		ConstVectorIterator & operator+=(int n)
+		 ConstVectorIterator & operator+=(int n)
 		{
 			*this = *this + n;
 			return (*this);
@@ -197,126 +195,71 @@ namespace ft
 	{
 		
 		public:
-			ReverseVectorIterator() : VectorIterator() {}
-			ReverseVectorIterator(T * _ptr) : VectorIterator(_ptr){}
-			ReverseVectorIterator(ReverseVectorIterator const & other) : VectorIterator(other){}
-			ReverseVectorIterator(ConstReverseVectorIterator<T> other) : VectorIterator(other){}
+			ReverseVectorIterator() : VectorIterator<T>() {}
+			ReverseVectorIterator(T * _ptr) : VectorIterator<T>(_ptr){}
+			ReverseVectorIterator(ReverseVectorIterator const & other) : VectorIterator<T>(other){}
+			ReverseVectorIterator(ConstReverseVectorIterator<T> other) : VectorIterator<T>(other){}
 			~ReverseVectorIterator(){}
 			
 			VectorIterator<T> & operator++()
 			{
-				return (VectorIterator::operator--());
+				return (VectorIterator<T>::operator--());
 			}	
-			VectorIterator & operator--()
+			VectorIterator<T> & operator--()
 			{
-				return (VectorIterator::operator++());
+				return (VectorIterator<T>::operator++());
 			}
 			
 			T  operator[](size_t n) 
 			{
-				return (*(ptr - n));
+				return (*(this->ptr - n));
 			}
 			
-			VectorIterator operator+(int n) const
+			VectorIterator<T> operator+(int n) const
 			{
-				return (VectorIterator::operator-(n));
+				return (VectorIterator<T>::operator-(n));
 			}
-			VectorIterator operator-(int n) const
+			VectorIterator<T> operator-(int n) const
 			{
-				return (VectorIterator::operator+(n));
+				return (VectorIterator<T>::operator+(n));
 			}
 	};
 
 
 	template <typename T>
-	class ConstReverseVectorIterator
+	class ConstReverseVectorIterator: public ConstVectorIterator<T>
 	{
-	protected:
-		 T * ptr;
 		
-	public:
-		ConstReverseVectorIterator()
-		{}
-		ConstReverseVectorIterator(const ConstReverseVectorIterator & other)
-		{
-			*this = other;
-		}
-		ConstReverseVectorIterator(T * _ptr)
-		{
-			ptr = _ptr;
-		}
-		~ConstReverseVectorIterator()
-		{}
-		ConstReverseVectorIterator & operator=(ConstReverseVectorIterator const & other)
-		{
-			ptr = other.ptr;
-			return (*this);
-		}
-		ConstReverseVectorIterator & operator++()
-		{
-			ptr--;
-			return (*this);
-		}
-		ConstReverseVectorIterator & operator--()
-		{
-			ptr++;
-			return (*this);
-		}
-		ConstReverseVectorIterator operator++(int)
-		{
-			ConstReverseVectorIterator tmp(*this);
-			operator++();
-			return (tmp);
-		}
-		ConstReverseVectorIterator operator--(int)
-		{
-			ConstReverseVectorIterator tmp(*this);
-			operator--();
-			return (tmp);
-		}
-		bool operator==(const ConstReverseVectorIterator & other) const
-		{
-			return (ptr == other.ptr);
-		}
-		bool operator!=(const ConstReverseVectorIterator & other) const
-		{
-			return (ptr != other.ptr);
-		}
-		T & operator*()	const
-		{
-			return (*ptr);
-		}
-		T *operator->()	const
-		{
-			return (*ptr);
-		}
-		T  operator[](size_t n) const
-		{
-			return (*(ptr - n));
-		}
-		ConstReverseVectorIterator operator+(int n) const
-		{
-			ConstReverseVectorIterator tmp(*this);
-			tmp += n;
-			return (tmp);
-		}
-		ConstReverseVectorIterator operator-(int n) const
-		{
-			ConstReverseVectorIterator tmp(*this);
-			tmp -= n;
-			return (tmp);
-		}
-		ConstReverseVectorIterator & operator+=(int n)
-		{
-			*this = *this - n;
-			return (*this);
-		}
-		ConstReverseVectorIterator & operator-=(int n)
-		{
-			*this = *this + n;
-			return (*this);
-		}
+		public:
+			ConstReverseVectorIterator() : ConstVectorIterator<T>() {}
+			ConstReverseVectorIterator(T const *_ptr) : ConstVectorIterator<T>(_ptr){}
+			ConstReverseVectorIterator(ConstReverseVectorIterator const & other) : ConstVectorIterator<T>(other){}
+			~ConstReverseVectorIterator(){}
+			
+			ConstVectorIterator<T> & operator++()
+			{
+				return (ConstVectorIterator<T>::operator--());
+			}	
+			ConstVectorIterator<T> & operator--()
+			{
+				return (ConstVectorIterator<T>::operator++());
+			}
+			
+			T  operator[](size_t n) const
+			{
+				return (*(this->ptr - n));
+			}
+			
+			ConstVectorIterator<T> operator+(int n) const
+			{
+				return (ConstVectorIterator<T>::operator-(n));
+			}
+			ConstVectorIterator<T> operator-(int n) const
+			{
+				return (ConstVectorIterator<T>::operator+(n));
+			}
 	};
+
 };
 
 #endif
