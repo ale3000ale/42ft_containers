@@ -7,8 +7,8 @@ Write your code in this editor and press "Run" button to compile and execute it.
 *******************************************************************************/
 
 #include <iostream>
-//#include "VectorIterator.hpp"
-
+#include "VectorIterator.hpp"
+#include "iterator.hpp"
 using namespace std;
 
 struct Test {

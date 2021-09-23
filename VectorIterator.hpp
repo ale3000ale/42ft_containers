@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 17:15:47 by amarcell          #+#    #+#             */
-/*   Updated: 2021/09/23 12:53:29 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/09/23 16:18:08 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,68 @@ namespace ft
 			VectorIterator(VectorIterator<iterator_type> const & other) : ptr(other.ptr) {}
 			~VectorIterator(){}
 
+
+			/*-------------------OPERATORS-------------------*/
 			VectorIterator & operator=(VectorIterator const & other)
 			{
 				ptr = other.ptr;
 				return (*this);
 			}
+
+			/*---------LOGIC OPERATOR---------*/
+
+		private:
+			template <class _Iter1, class _Iter2>
+			bool operator==(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+			{
+				return (vc1.base() == vc2.base());
+			}
+
+			template <class _Iter1, class _Iter2>
+			bool operator<(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+			{
+				return (vc1.base() < vc2.base());
+			}
+
+			template <class _Iter1, class _Iter2>
+			bool operator!=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+			{
+				return !(vc1.base() == vc2.base());
+			}
+				
+			template <class _Iter1, class _Iter2>
+			bool operator>(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+			{
+				return (vc1.base() > vc2.base());
+			}
+				
+			template <class _Iter1, class _Iter2>
+			bool operator>=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+			{
+				return (vc1.base() >= vc2.base());
+			}
+					
+			template <class _Iter1, class _Iter2>
+			bool operator<=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+			{
+				return (vc1.base() <= vc2.base());
+			}
+			
+			/*---------ACCESS OPERATOR---------*/
+		public:
+			reference operator*() const
+			{
+				return (*ptr);
+			}
+			pointer operator->() const
+			{
+				return (ptr);
+			}
+			reference  operator[](size_t n) const
+			{
+				return (ptr[n]);
+			}
+			/*---------ARITMETIC OPERATOR---------*/
 			VectorIterator & operator++()
 			{
 				++ptr;
@@ -63,29 +120,6 @@ namespace ft
 				operator--();
 				return (tmp);
 			}
-			bool operator==(VectorIterator const & other) const
-			{
-				return (ptr == other.ptr);
-			}
-			bool operator!=(VectorIterator const & other) const
-			{
-				return (ptr != other.ptr);
-			}
-			reference operator*() const
-			{
-				return (*ptr);
-			}
-			pointer operator->() const
-			{
-				return (ptr);
-			}
-			reference  operator[](size_t n) const
-			{
-				return (ptr[n]);
-			}
-			/*-------------------OPERATORS-------------------*/
-			/*---------ACCESS OPERATOR---------*/
-			/*---------ARITMETIC OPERATOR---------*/
 			VectorIterator operator+(difference_type n) const
 			{
 				VectorIterator tmp(*this);
@@ -101,17 +135,13 @@ namespace ft
 			VectorIterator & operator+=(difference_type n)
 			{
 				ptr += n;
-        		return (*this);
+				return (*this);
 			}
 			VectorIterator & operator-=(difference_type n)
 			{
 				ptr -= n;
-        		return (*this);
+				return (*this);
 			}
-
-			/*-------------------METHODS-------------------*/
-			
-		
 
 			/*-------------------ACCESSOR-------------------*/
 			iterator_type base() const

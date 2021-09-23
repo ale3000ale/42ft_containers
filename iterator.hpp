@@ -33,6 +33,8 @@ namespace ft
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
+
+	// define the iterator mask traits
 	template<class Category, class T, class Distance = ptrdiff_t,
          class Pointer = T*, class Reference = T&>
 	struct iterator
@@ -44,6 +46,9 @@ namespace ft
 		typedef Category  iterator_category;
 	};
 
+
+/*-------------------------------------REVERSE ITERATOR-------------------------------------*/
+
 	//standard reverse iterator
 	template <class _Iter>
 	class reverse_iterator: 
@@ -53,9 +58,6 @@ namespace ft
 											typename iterator_traits<_Iter>::pointer,
 											typename iterator_traits<_Iter>::reference>
 	{
-	private:
-		_Iter __t;
-
 	protected:
 		_Iter it;
 	public:
@@ -65,18 +67,19 @@ namespace ft
 		typedef typename iterator_traits<_Iter>::pointer         pointer;
 
 		/*-------------------CONSTRUCTURS-------------------*/
-		reverse_iterator() : __t(), it() {}
-		explicit reverse_itreator(_Iter _it) : __t(_it), it(_it) {}
+		reverse_iterator() : it() {}
+		explicit reverse_itreator(_Iter _it) :  it(_it) {}
 		//constructur copy
 		template <class _BaseIt>	//base iterator of the copy RI
         reverse_iterator(const reverse_iterator<_BaseIt>& cpy) 
-													: __t(cpy.base()), it(cpy.base()) {}
+													:  it(cpy.base()) {}
 
 		/*-------------------OPERATORS-------------------*/
+		/* call operators from base_iterator */
 		template <class _BaseIt>	//base iterator of the copy RI
 		reverse_iterator& operator=(const reverse_iterator<_BaseIt>& cpy)
 		{
-			__t = it = cpy.base(); 
+			it = cpy.base(); 
 			return (*this);
 		}
 
@@ -117,9 +120,9 @@ namespace ft
 
 		reverse_iterator	operator--(int) 
 		{
-			reverse_iterator __tmp(*this);
+			reverse_iterator tmp(*this);
 			++it;
-			return __tmp;
+			return tmp;
 		}
 
 		reverse_iterator	operator+(difference_type n) const 
@@ -156,6 +159,42 @@ namespace ft
 			return it;
 		}
 	};
+
+	template <class _Iter1, class _Iter2>
+	bool operator==(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	{
+		return (vc1.base() == vc2.base());
+	}
+
+	template <class _Iter1, class _Iter2>
+	bool operator<(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	{
+		return (vc1.base() < vc2.base());
+	}
+
+	template <class _Iter1, class _Iter2>
+	bool operator!=(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	{
+		return !(vc1.base() == vc2.base());
+	}
+				
+	template <class _Iter1, class _Iter2>
+	bool operator>(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	{
+		return (vc1.base() > vc2.base());
+	}
+				
+	template <class _Iter1, class _Iter2>
+	bool operator>=(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	{
+		return (vc1.base() >= vc2.base());
+	}
+					
+	template <class _Iter1, class _Iter2>
+	bool operator<=(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	{
+		return (vc1.base() <= vc2.base());
+	}
 };
 
 
