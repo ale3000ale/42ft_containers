@@ -50,7 +50,7 @@ namespace ft
 
 	//standard reverse iterator
 	template <class _Iter>
-	class reverse_iterator: 
+	class reverse_iterator: // use iterator mask traits
 							public iterator<typename iterator_traits<_Iter>::iterator_category,
 											typename iterator_traits<_Iter>::value_type,
 											typename iterator_traits<_Iter>::difference_type,
@@ -146,11 +146,6 @@ namespace ft
 			return *this;
 		}
 
-		
-		/*-------------------METHODS-------------------*/
-			
-		
-
 		/*-------------------ACCESSOR-------------------*/
 
 		_Iter base() const 
@@ -159,6 +154,7 @@ namespace ft
 		}
 	};
 
+	/*---------LOGIC OPERATOR---------*/
 	template <class _Iter1, class _Iter2>
 	bool operator==(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
 	{
