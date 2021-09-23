@@ -10,7 +10,6 @@
 
 namespace ft
 {
-	std::vector<int>;
 	// define the traits of iterator from an iterator
 	template<class Iterator>
 		struct iterator_traits
@@ -68,7 +67,7 @@ namespace ft
 
 		/*-------------------CONSTRUCTURS-------------------*/
 		reverse_iterator() : it() {}
-		explicit reverse_itreator(_Iter _it) :  it(_it) {}
+		explicit reverse_iterator(_Iter _it) :  it(_it) {}
 		//constructur copy
 		template <class _BaseIt>	//base iterator of the copy RI
         reverse_iterator(const reverse_iterator<_BaseIt>& cpy) 
