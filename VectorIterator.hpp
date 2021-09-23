@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 17:15:47 by amarcell          #+#    #+#             */
-/*   Updated: 2021/09/21 19:51:03 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/09/23 12:53:29 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,14 @@ namespace ft
 		private:
 			_Iter	ptr;
 		public:
-			typedef _Iter                                                      iterator_type;
-			typedef typename iterator_traits<iterator_type>::iterator_category iterator_category;
-			typedef typename iterator_traits<iterator_type>::value_type        value_type;
-			typedef typename iterator_traits<iterator_type>::difference_type   difference_type;
-			typedef typename iterator_traits<iterator_type>::pointer           pointer;
-			typedef typename iterator_traits<iterator_type>::reference         reference;
+			typedef _Iter														iterator_type;
+			typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
+			typedef typename iterator_traits<iterator_type>::value_type			value_type;
+			typedef typename iterator_traits<iterator_type>::difference_type	difference_type;
+			typedef typename iterator_traits<iterator_type>::pointer			pointer;
+			typedef typename iterator_traits<iterator_type>::reference			reference;
 
+			/*-------------------CONSTRUCTURS-------------------*/
 			VectorIterator() : ptr(nullptr) {}
 			VectorIterator(iterator_type _ptr) : ptr(_ptr){}
 			VectorIterator(VectorIterator<iterator_type> const & other) : ptr(other.ptr) {}
@@ -82,6 +83,9 @@ namespace ft
 			{
 				return (ptr[n]);
 			}
+			/*-------------------OPERATORS-------------------*/
+			/*---------ACCESS OPERATOR---------*/
+			/*---------ARITMETIC OPERATOR---------*/
 			VectorIterator operator+(difference_type n) const
 			{
 				VectorIterator tmp(*this);
@@ -104,6 +108,12 @@ namespace ft
 				ptr -= n;
         		return (*this);
 			}
+
+			/*-------------------METHODS-------------------*/
+			
+		
+
+			/*-------------------ACCESSOR-------------------*/
 			iterator_type base() const
 			{
 				return (ptr);
