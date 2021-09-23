@@ -9,7 +9,6 @@
 
 # include <vector>
 
-
 std::vector<int> test;
 namespace ft
 {
@@ -51,8 +50,12 @@ namespace ft
 			};
 			~vector()
 			{
-				clear();
-				shrink_to_fit();
+				if (_array != nullptr)
+				{
+					clear();
+					// da sistemare
+					__alloc_traits::deallocate(__alloc(), _array, _capacity);
+				}
 			};
 			vector& operator=(const vector& x)
 			{
@@ -160,18 +163,54 @@ namespace ft
 				// creare un nuovo vettore, copiarlo e liberare quello vecchio
 			};
 
-			reference       operator[](size_type n);
-			const_reference operator[](size_type n) const;
-			reference       at(size_type n);
-			const_reference at(size_type n) const;
+			// non faccio mezzo controllo sulla correttezza dell'indice richiesto, non sicuro
+			reference       operator[](size_type n)
+			{
+				return (_array[n]);
+			};
+			const_reference operator[](size_type n) const
+			{
+				return (_array[n]);
+			};
+			reference       at(size_type n)
+			{
+				return (_array[n]);
+			};
+			const_reference at(size_type n) const
+			{
+				return (_array[n]);
+			};
 
-			value_type*       data();
-			const value_type* data() const;
+			value_type*       data()
+			{
+				return (_array);
+			};
+			const value_type* data() const
+			{
+				return (_array);
+			};
+
+			reference       front()
+			{
+				return (*_array);
+			};
+			const_reference front() const
+			{
+				return (*_array);
+			};
+			reference       back()
+			{
+				return (_array[_size - 1]);
+			};
+			const_reference back() const
+			{
+				return (_array[_size - 1]);
+			};
 
 			void push_back(const value_type& x);
 			void pop_back();
 
-			iterator insert(const_iterator position, const value_type& x);
+			iterator insert(const_iterator position, const_reference x);
 			iterator insert(const_iterator position, size_type n, const value_type& x);
 			template <class InputIterator>
 				iterator insert(const_iterator position, InputIterator first, InputIterator last);
