@@ -2,8 +2,7 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-# include <memory>
-# include <limits>
+# include <memory> // for std::allocator
 # include "VectorIterator.hpp"
 
 
@@ -53,12 +52,12 @@ namespace ft
 				if (_array != nullptr)
 				{
 					clear();
-					// da sistemare
-					__alloc_traits::deallocate(__alloc(), _array, _capacity);
+					_alloc.deallocate(_array, _capacity);
 				}
 			};
 			vector& operator=(const vector& x)
 			{
+				// destroy
 				assign(x.begin(), x.end());
 			};
 
@@ -78,7 +77,7 @@ namespace ft
 			allocator_type get_allocator() const
 			{
 				allocator_type copy(_alloc);
-				return (copy);	
+				return (copy);
 			};
 
 			/* iterators funcs */
@@ -138,8 +137,6 @@ namespace ft
 			};
 			size_type max_size() const
 			{
-				// return (unsigned long long max value / sizeof(T)
-				//return (ULLONG_MAX / sizeof(value_type));
 				return (_alloc.max_size());
 			};
 			size_type capacity() const
@@ -154,13 +151,21 @@ namespace ft
 			{
 				if (_capacity >= n)
 					return ;
-				// creare un nuovo vettore, copiarlo e liberare quello vecchio
+				_allocate_copy_assign(n);
 			};
 			void shrink_to_fit()
 			{
 				if (!(_capacity > _size))
 					return ;
 				// creare un nuovo vettore, copiarlo e liberare quello vecchio
+				if (!_size && _array)
+				{
+					_alloc.deallocate(_array, _capacity);
+					_array = nullptr;
+					_capacity = 0;
+					return ;
+				}
+				_allocate_copy_assign(_size);
 			};
 
 			// non faccio mezzo controllo sulla correttezza dell'indice richiesto, non sicuro
@@ -207,30 +212,113 @@ namespace ft
 				return (_array[_size - 1]);
 			};
 
-			void push_back(const value_type& x);
-			void pop_back();
-
-			iterator insert(const_iterator position, const_reference x);
-			iterator insert(const_iterator position, size_type n, const value_type& x);
+			void push_back(const value_type& x)
+			{
+				/* if _capacity is enough to store another value it just adds it, 
+					 otherwise it allocates double _size and stores it */
+				
+				/* probabilmente si puó fare richiamando la insert */
+				if (!_capacity)
+				{
+					_array = _alloc.allocate(1);
+					_capacity = 1;
+				}
+				if (_size == _capacity)
+					_allocate_copy_assign(_size * 2);
+				_alloc.construct(&_array[_size++], x);
+			};
+			void pop_back()
+			{
+				if (!_size)
+					return ;
+				_alloc.destroy(&_array[--_size]);
+			};
+			iterator insert(const_iterator position, const_reference x)
+			{
+				if (_size == _capacity)
+					_allocate_copy_assign(_size * 2);
+				if (position == cend())
+					push_back(x);
+				else
+				{
+					for (iterator it = end(); it != position; --it)
+						*it = *(it - 1);
+					_alloc.construct(it.base(), x);
+					++_size;
+				}
+			};
+			iterator insert(const_iterator position, size_type n, const_reference x)
+			{
+				for (size_type i = 0; i < n; i++)
+					insert(position, x);
+			};
 			template <class InputIterator>
-				iterator insert(const_iterator position, InputIterator first, InputIterator last);
+				iterator insert(const_iterator position, InputIterator first, InputIterator last)
+				{
+					for (iterator it = first; it != last; ++it)
+						insert(position, *it);
+				};
+			iterator erase(const_iterator position)
+			{
+				_alloc.destroy(position.base());
+				for(iterator it = position; it != end() - 1; ++it)
+					*it = *(it + 1);
+				--_size;
+				/*difference_type offset = (position - cbegin()).base();
+				for( ; offset < _size - 1; offset++)
+					_array[offset] = _array[offset + 1];
+				--_size;*/
+				return (iterator(position));
+			};
+			iterator erase(const_iterator first, const_iterator last)
+			{
+				iterator to_erase = first;
+				for (iterator it = first; it != last; ++it)
+					to_erase = erase(to_erase);
+				return (to_erase);
+			};
 
-			iterator erase(const_iterator position);
-			iterator erase(const_iterator first, const_iterator last);
+			void clear()
+			{
+				erase(cbegin(), cend());
+			};
+			void resize(size_type sz, const value_type& c = value_type())
+			{
+				while (_size < sz)
+					push_back(c);
+				while (_size > sz)
+					pop_back();
+			};
 
-			void clear();
-
-			void resize(size_type sz);
-			void resize(size_type sz, const value_type& c);
-
-			void swap(vector&);
+			void swap(vector& x)
+			{
+				value_type tmp = x;
+				x = *this;
+				*this = tmp;
+			};
 
 		private:
 			pointer			_array;
 			size_type		_size;
 			size_type		_capacity;
 			allocator_type	_alloc;
-			
+
+			void _allocate_copy_assign(size_type size)
+			{
+				pointer _new_array = _alloc.allocate(size);
+				if (_array)
+				{
+					// copy element and destruct it
+					for (int i=0; i<_size; i++)
+					{
+						_alloc.construct(_new_array, _array[i]);
+						_alloc.destroy(&(_array[i]));
+					}
+					_alloc.deallocate(_array, _capacity);
+				}
+				_capacity = size;
+				_array = _new_array;
+			}
 	};
 
 	/* non-member funcs */
