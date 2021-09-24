@@ -5,7 +5,6 @@
 
 #include <iterator> // For std::forward_iterator_tag
 #include <cstddef>  // For std::ptrdiff_t
-#include <vector>
 #include <iostream>
 
 namespace ft

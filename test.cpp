@@ -9,9 +9,12 @@ Write your code in this editor and press "Run" button to compile and execute it.
 #include <iostream>
 #include "VectorIterator.hpp"
 #include "iterator.hpp"
+#include "Vector.hpp"
+
+
 
 int main() {
-	int const a[5] = {1,2,3,4,5};
+	/*int const a[5] = {1,2,3,4,5};	
 	int b[5] = {1,2,3,4,5};
 	ft::VectorIterator<const int*> ci(a);
 	ft::reverse_iterator<ft::VectorIterator<const int*> > cr(&a[4]);
@@ -48,17 +51,11 @@ int main() {
 	std::cout << "CIT: " << (ci < ci) << std::endl;
 	std::cout << "C A:  " << a << "   B: " << b<< std::endl;
 	std::cout << "CIT:  " << ci.base()  			<< "  IT: " << i.base() << std::endl;
-	std::cout << "CRIT: " << cr.base().base()	<< " RIT: " << r.base().base() << std::endl;
+	std::cout << "CRIT: " << cr.base().base()	<< " RIT: " << r.base().base() << std::endl;*/
 
-	
+	ft::vector<int> test;
 
-
-
-
+	test.push_back(5);
+	for(ft::vector<int>::iterator it = test.begin(); it != test.end(); ++it)
+		std::cout << *it << std::endl;
 }
-
-
-
-/* 	 */
-	
-

@@ -17,11 +17,15 @@
 
 namespace ft
 {
+	template <class T, class Allocator>
+	class vector;
+
 	template <class _Iter> // _Iter = T*
 	class VectorIterator
 	{
 		private:
 			_Iter	ptr;
+
 		public:
 			typedef _Iter														iterator_type;
 			typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
@@ -32,10 +36,8 @@ namespace ft
 
 			/*-------------------CONSTRUCTURS-------------------*/
 			VectorIterator() : ptr(nullptr) {}
-			VectorIterator(iterator_type _ptr) : ptr(_ptr){}
 			VectorIterator(VectorIterator<iterator_type> const & other) : ptr(other.ptr) {}
 			~VectorIterator(){}
-
 
 			/*-------------------OPERATORS-------------------*/
 			VectorIterator & operator=(VectorIterator const & other)
@@ -43,7 +45,8 @@ namespace ft
 				ptr = other.ptr;
 				return (*this);
 			}
-			
+		private:
+			VectorIterator(iterator_type _ptr) : ptr(_ptr){}
 			/*---------ACCESS OPERATOR---------*/
 		public:
 			reference operator*() const
@@ -109,6 +112,7 @@ namespace ft
 			{
 				return (ptr);
 			}
+		template <class T, class Allocator> friend class vector;
 	};
 
 	/*---------LOGIC OPERATOR---------*/
