@@ -79,11 +79,15 @@ int main() {
 	std::cout << "vector2 ("<< vec2.size() << "): " << vec2 << std::endl;
 
 	std::cout << "--------------POP BACK--------------" << std::endl;
-	std::cout << vec  << std::endl;
-	std::cout << vec2 << std::endl;
 
 	vec.pop_back();
-	std::cout << vec << std::endl;
+	std::cout << "vector ("<< vec.size() << "," << vec.capacity()<<"): " << vec << std::endl;
+	std::cout << "vector2 ("<< vec2.size() << "," << vec2.capacity()<<"): " << vec2 << std::endl;
+
+	std::cout << "--------------INSERT V in front of V2--------------" << std::endl;
+	vec2.insert(vec2.cbegin(), vec.begin(), vec.rbegin().base());
+	std::cout << "vector ("<< vec.size() << "): " << vec << std::endl;
+	std::cout << "vector2 ("<< vec2.size() << "): " << vec2 << std::endl;
 
 	std::cout << "--------------STACK--------------" << std::endl;
 	ft::stack<int,ft::vector<int> > s;
@@ -96,10 +100,5 @@ int main() {
 	std::cout << "--------------POP--------------" << std::endl;
 	s.pop();
 	std::cout << s.top() << std::endl;
-
-	std::cout << "--------------POP--------------" << std::endl;
-	s.pop();
-	std::cout << s.top() << std::endl;
-	s.size();
 
 }

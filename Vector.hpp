@@ -63,7 +63,7 @@ namespace ft
 			vector& operator=(const vector& x)
 			{
 				if (x != *this)
-					assign(x.begin(), x.end());
+					assign(x.begin(), --x.end());
 				return (*this);
 			};
 
@@ -106,7 +106,7 @@ namespace ft
 			};
 			reverse_iterator       rbegin()
 			{
-				return (reverse_iterator(end()));
+				return (reverse_iterator(--end()));
 			};
 			const_reverse_iterator rbegin()		const
 			{
@@ -228,6 +228,7 @@ namespace ft
 				if (!_size)
 					return ;
 				_alloc.destroy(&_array[--_size]);
+
 			};
 			iterator insert(const_iterator position, const_reference x)
 			{
@@ -290,9 +291,13 @@ namespace ft
 			template <class InputIterator>
 				iterator insert(const_iterator position, InputIterator first, InputIterator last)
 				{
-					for (const_iterator it = first; it != last; ++it)
+					InputIterator it = last;
+					while(it != first)
+					{
 						position = const_iterator(insert(position, *it).base());
-					//std::cout << "INSERT: "<< *this <<std::endl;
+						it--;
+					}
+					position = const_iterator(insert(position, *it).base());
 					return (_make_iter(position));
 				};
 			iterator erase(const_iterator position)
