@@ -335,7 +335,7 @@ namespace ft
 					// copy element and destruct it
 					for (unsigned long i=0; i<_size; i++)
 					{
-						_alloc.construct(_new_array, _array[i]);
+						_alloc.construct(_new_array + i, _array[i]);
 						_alloc.destroy(&(_array[i]));
 					}
 					_alloc.deallocate(_array, _capacity);
@@ -343,6 +343,7 @@ namespace ft
 				_capacity = size;
 				_array = _new_array;
 			}
+
 			iterator _make_iter(const_iterator iter)
 			{
 				difference_type offset = iter.base() - cbegin().base();
@@ -377,6 +378,17 @@ namespace ft
 	{
 		return (!(y < x));
 	};
+
+	template <class T>
+	std::ostream &operator<<(std::ostream &out, vector<T> &vec)
+	{
+		out <<"[";
+		for(ft::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it)
+		out << *it <<" ";
+		out << "]" << std::endl;
+		return (out);
+	}
+
 };
 
 #endif

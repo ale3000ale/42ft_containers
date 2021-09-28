@@ -10,6 +10,7 @@ Write your code in this editor and press "Run" button to compile and execute it.
 #include "VectorIterator.hpp"
 #include "iterator.hpp"
 #include "Vector.hpp"
+#include "Stack.hpp"
 
 
 
@@ -51,11 +52,39 @@ int main() {
 	std::cout << "CIT: " << (ci < ci) << std::endl;
 	std::cout << "C A:  " << a << "   B: " << b<< std::endl;
 	std::cout << "CIT:  " << ci.base()  			<< "  IT: " << i.base() << std::endl;
-	std::cout << "CRIT: " << cr.base().base()	<< " RIT: " << r.base().base() << std::endl;*/
+	std::cout << "CRIT: " << cr.base().base()	<< " RIT: " << r.base().base() << std::endl;
+		*/
+	ft::vector<int> vec;
 
-	ft::vector<int> test;
+	std::cout << "--------------VECTOR--------------" << std::endl;
+	vec.push_back(5);
+	vec.push_back(50);
+	vec.push_back(500);
+	
+	std::cout << "--------------SIZE--------------" << std::endl;
+	std::cout << vec.size() << std::endl;
 
-	test.push_back(5);
-	for(ft::vector<int>::iterator it = test.begin(); it != test.end(); ++it)
-		std::cout << *it << std::endl;
+	std::cout << "--------------POP BACK--------------" << std::endl;
+	std::cout << vec;
+	vec.pop_back();
+	std::cout << vec;
+
+
+	std::cout << "--------------STACK--------------" << std::endl;
+	ft::stack<int,ft::vector<int> > s;
+	s.push(5);
+	s.push(50);
+	s.push(500);
+	std::cout << "--------------TOP--------------" << std::endl;
+	std::cout << s.top() << std::endl;
+
+	std::cout << "--------------POP--------------" << std::endl;
+	s.pop();
+	std::cout << s.top() << std::endl;
+
+	std::cout << "--------------POP--------------" << std::endl;
+	s.pop();
+	std::cout << s.top() << std::endl;
+	s.size();
+
 }

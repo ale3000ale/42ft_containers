@@ -44,7 +44,6 @@ namespace ft
 		typedef Category  iterator_category;
 	};
 
-
 /*-------------------------------------REVERSE ITERATOR-------------------------------------*/
 
 	//standard reverse iterator

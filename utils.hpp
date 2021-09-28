@@ -68,6 +68,14 @@ namespace ft
 				return (false);
 		return (true);
 	}
+
+
+	template <bool, class _Tp = void> struct enable_if {};
+	template <class _Tp> struct enable_if<true, _Tp> 
+	{
+		typedef _Tp type;
+	};
+
 };
 
 #endif
