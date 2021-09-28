@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VectorIterator.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexmarcelli <alexmarcelli@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 17:15:47 by amarcell          #+#    #+#             */
-/*   Updated: 2021/09/23 17:20:39 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/09/28 16:36:30 by alexmarcell      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

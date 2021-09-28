@@ -35,6 +35,7 @@ namespace ft
 			{
 				reserve(n);
 			};
+
 			vector(size_type n, const value_type& value, const allocator_type& alloc = allocator_type()) : _array(nullptr), _size(0), _capacity(0), _alloc(alloc)
 			{
 				assign(n, value);
@@ -44,10 +45,13 @@ namespace ft
 				{
 					assign(first, last);
 				};
-			vector(const vector& x)
+
+			vector(const vector& x): _array(nullptr), _size(0), _capacity(0), _alloc(x._alloc)
 			{
-				*this = x;
+				if (x != *this)
+					*this = x;
 			};
+
 			~vector()
 			{
 				if (_array != nullptr)
@@ -58,16 +62,19 @@ namespace ft
 			};
 			vector& operator=(const vector& x)
 			{
-				assign(x.begin(), x.end());
+				if (x != *this)
+					assign(x.begin(), x.end());
+				return (*this);
 			};
 
 			/* assign function */
 			template <class InputIterator>
-				void assign(InputIterator first, InputIterator last)
-				{
-					clear();
-					insert(begin(), first, last);				
-				};
+			void assign(InputIterator first, InputIterator last)
+			{	
+				clear();
+				insert(cbegin(), first, last);				
+			};
+
 			void assign(size_type n, const value_type& u)
 			{
 				clear();
@@ -241,7 +248,9 @@ namespace ft
 						_alloc.construct(it.base(), *(it - 1));
 						--it;
 						for ( ; it != position; --it)
+						{
 							*it = *(it - 1);
+						}
 						*it = x;
 					}
 					++_size;
@@ -282,7 +291,8 @@ namespace ft
 				iterator insert(const_iterator position, InputIterator first, InputIterator last)
 				{
 					for (const_iterator it = first; it != last; ++it)
-						insert(position, *it);
+						position = const_iterator(insert(position, *it).base());
+					//std::cout << "INSERT: "<< *this <<std::endl;
 					return (_make_iter(position));
 				};
 			iterator erase(const_iterator position)
@@ -316,7 +326,7 @@ namespace ft
 
 			void swap(vector& x)
 			{
-				value_type tmp = x;
+				vector tmp(x);
 				x = *this;
 				*this = tmp;
 			};
@@ -385,7 +395,7 @@ namespace ft
 		out <<"[";
 		for(ft::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it)
 		out << *it <<" ";
-		out << "]" << std::endl;
+		out << "]";
 		return (out);
 	}
 

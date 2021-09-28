@@ -55,20 +55,35 @@ int main() {
 	std::cout << "CRIT: " << cr.base().base()	<< " RIT: " << r.base().base() << std::endl;
 		*/
 	ft::vector<int> vec;
+	ft::vector<int> vec2;
+
 
 	std::cout << "--------------VECTOR--------------" << std::endl;
 	vec.push_back(5);
 	vec.push_back(50);
 	vec.push_back(500);
+
+	vec2.push_back(4);
+	vec2.push_back(40);
+	vec2.push_back(400);
+	vec2.push_back(4000);
 	
 	std::cout << "--------------SIZE--------------" << std::endl;
-	std::cout << vec.size() << std::endl;
+	std::cout << "vector ("<< vec.size() << "): " << vec << std::endl;
+	std::cout << "vector2 ("<< vec2.size() << "): " << vec2 << std::endl;
+
+	std::cout << "--------------SWAP--------------" << std::endl;
+
+	vec.swap(vec2);
+	std::cout << "vector ("<< vec.size() << "): " << vec << std::endl;
+	std::cout << "vector2 ("<< vec2.size() << "): " << vec2 << std::endl;
 
 	std::cout << "--------------POP BACK--------------" << std::endl;
-	std::cout << vec;
-	vec.pop_back();
-	std::cout << vec;
+	std::cout << vec  << std::endl;
+	std::cout << vec2 << std::endl;
 
+	vec.pop_back();
+	std::cout << vec << std::endl;
 
 	std::cout << "--------------STACK--------------" << std::endl;
 	ft::stack<int,ft::vector<int> > s;
