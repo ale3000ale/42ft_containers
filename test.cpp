@@ -15,7 +15,7 @@ Write your code in this editor and press "Run" button to compile and execute it.
 
 
 int main() {
-	/*int const a[5] = {1,2,3,4,5};	
+	/* int const a[5] = {1,2,3,4,5};	
 	int b[5] = {1,2,3,4,5};
 	ft::VectorIterator<const int*> ci(a);
 	ft::reverse_iterator<ft::VectorIterator<const int*> > cr(&a[4]);
@@ -53,7 +53,7 @@ int main() {
 	std::cout << "C A:  " << a << "   B: " << b<< std::endl;
 	std::cout << "CIT:  " << ci.base()  			<< "  IT: " << i.base() << std::endl;
 	std::cout << "CRIT: " << cr.base().base()	<< " RIT: " << r.base().base() << std::endl;
-		*/
+		
 	ft::vector<int> vec;
 	ft::vector<int> vec2;
 
@@ -99,6 +99,6 @@ int main() {
 
 	std::cout << "--------------POP--------------" << std::endl;
 	s.pop();
-	std::cout << s.top() << std::endl;
-
+	std::cout << s.top() << std::endl; */
+	std::make_pair
 }

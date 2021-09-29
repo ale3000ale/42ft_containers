@@ -6,10 +6,6 @@
 # include "VectorIterator.hpp"
 # include "utils.hpp"
 
-#include <vector>
-
-std::vector<int> t;
-
 namespace ft
 {
 	template <class T, class Allocator = std::allocator<T> >
