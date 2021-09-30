@@ -20,7 +20,6 @@
 
 namespace ft
 {
-
 	template <class Tp, class _Container>
 	class stack
 	{

@@ -3,7 +3,7 @@
 # define UTILS_HPP
 
 # include <algorithm>
-# include "iterator.hpp"
+//# include "iterator.hpp"
 
 namespace ft 
 {
@@ -30,7 +30,22 @@ namespace ft
 		return (false);
 	}*/
 
-	template <class Compare, class InputIterator1, class InputIterator2>
+	template <class T>
+	void swap(T &a, T &b)
+	{
+		T tmp;
+		tmp = a;
+		a = b;
+		b = tmp;
+	}
+
+	template <bool, class _Tp = void> struct enable_if {};
+	template <class _Tp> struct enable_if<true, _Tp> 
+	{
+		typedef _Tp type;
+	};
+
+	template <class InputIterator1, class InputIterator2>
 	bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 							InputIterator2 first2, InputIterator2 last2)
 	{
@@ -44,7 +59,7 @@ namespace ft
 		return (false);
 	}
 
-	/*template <class _InputIterator1, class _InputIterator2>
+	/*template <class InputIterator1, class InputIterator2>
 	bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2)
 	{
 		typedef typename iterator_traits<InputIterator1>::value_type v1;

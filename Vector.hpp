@@ -44,7 +44,7 @@ namespace ft
 
 			vector(const vector& x): _array(nullptr), _size(0), _capacity(0), _alloc(x._alloc)
 			{
-				if (x != *this)
+				if (&x != this)
 					*this = x;
 			};
 
@@ -58,8 +58,8 @@ namespace ft
 			};
 			vector& operator=(const vector& x)
 			{
-				if (x != *this)
-					assign(x.begin(), --x.end());
+				if (&x != this)
+					assign(x.begin(), x.end());
 				return (*this);
 			};
 
@@ -171,7 +171,7 @@ namespace ft
 				_allocate_copy_assign(_size);
 			};
 
-			// non faccio mezzo controllo sulla correttezza dell'indice richiesto, non sicuro
+			// No bounds checking is performed on operator[]
 			reference       operator[](size_type n)
 			{
 				return (_array[n]);
@@ -182,10 +182,14 @@ namespace ft
 			};
 			reference       at(size_type n)
 			{
+				if (!(0 <= n < _size))
+					throw (std::out_of_range("index out of range"));
 				return (_array[n]);
 			};
 			const_reference at(size_type n) const
 			{
+				if (!(0 <= n < _size))
+					throw (std::out_of_range("index out of range"));
 				return (_array[n]);
 			};
 
@@ -198,6 +202,7 @@ namespace ft
 				return (_array);
 			};
 
+			// Calling front or back on an empty container causes undefined behavior.
 			reference       front()
 			{
 				return (*_array);
@@ -245,9 +250,7 @@ namespace ft
 						_alloc.construct(it.base(), *(it - 1));
 						--it;
 						for ( ; it != position; --it)
-						{
 							*it = *(it - 1);
-						}
 						*it = x;
 					}
 					++_size;
@@ -257,27 +260,6 @@ namespace ft
 				_allocate_copy_assign(_size * 2);
 				return (insert(_array + offset, x));
 			};
-			/*iterator insert(const_iterator position, const_reference x)
-			{
-				if (!_capacity)
-				{
-					_array = _alloc.allocate(1);
-					_capacity = 1;
-				}
-				if (_size == _capacity)
-					_allocate_copy_assign(_size * 2);
-				if (position == cend())
-					_alloc.construct(&_array[_size++], x);
-				else
-				{
-					iterator it = end();
-					for ( ; it != position; --it)
-						*it = *(it - 1);
-					_alloc.construct(it.base(), x);
-					++_size;
-				}
-				return (_make_iter(position));
-			};*/
 			iterator insert(const_iterator position, size_type n, const_reference x)
 			{
 				for (size_type i = 0; i < n; i++)
@@ -288,11 +270,8 @@ namespace ft
 				iterator insert(const_iterator position, InputIterator first, InputIterator last)
 				{
 					InputIterator it = last;
-					while(it != first)
-					{
+					while (--it != first)
 						position = const_iterator(insert(position, *it).base());
-						it--;
-					}
 					position = const_iterator(insert(position, *it).base());
 					return (_make_iter(position));
 				};
@@ -327,9 +306,10 @@ namespace ft
 
 			void swap(vector& x)
 			{
-				vector tmp(x);
-				x = *this;
-				*this = tmp;
+				ft::swap(this->_array, x._array);
+				ft::swap(this->_size, x._size);
+				ft::swap(this->_capacity, x._capacity);
+				std::cout<<"tac\n";
 			};
 
 		private:

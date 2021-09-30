@@ -3,25 +3,11 @@
 # define PAIR_H__
 
 # include <algorithm>
-# include "iterator.hpp"
+//# include "iterator.hpp"
+#include "utils.hpp"
 
 namespace ft 
 {
-	template <class T>
-	void swap(T &a, T &b)
-	{
-		T tmp;
-		tmp = a;
-		a = b;
-		b = tmp;
-	}
-
-	template <bool, class _Tp = void> struct enable_if {};
-	template <class _Tp> struct enable_if<true, _Tp> 
-	{
-		typedef _Tp type;
-	};
-
 	template <class T1, class T2>
 	struct pair		//default public
 	{
