@@ -25,7 +25,7 @@ std::map<int, int> t;
 namespace ft
 {
 	template <class Key, class T, class Compare = less<Key>,
-			class Allocator = allocator<pair<const Key, T>>>
+			class Allocator = std::allocator< pair <const Key, T> > >
 	class map
 	{
 	public:
@@ -53,55 +53,68 @@ namespace ft
 		protected:
 			key_compare comp;
 
-			value_compare(key_compare c);
+			value_compare(key_compare c) : comp(c) {};
 		public:
-			bool operator()(const value_type& x, const value_type& y) const;
+			bool operator()(const value_type& x, const value_type& y) const
+				{ return(comp(x.first, y.first)); };
 		};
 
 		// construct/copy/destroy:
-		map();
-		explicit map(const key_compare& comp);
-		map(const key_compare& comp, const allocator_type& a);
+		explicit map(const key_compare& comp = key_compare()) : _tree(key_compare(comp)) {};
+		/* TODO */
+		map(const key_compare& comp, const allocator_type& a) : _tree(key_compare(comp)/*,  allocator */) {} ;
 		template <class InputIterator>
-			map(InputIterator first, InputIterator last,
-				const key_compare& comp = key_compare());
+			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare())
+				: _tree(key_compare(comp))
+			{ insert(first, last); };
+		/* TODO */
 		template <class InputIterator>
-			map(InputIterator first, InputIterator last,
-				const key_compare& comp, const allocator_type& a);
-		map(const map& m);
-		map(map&& m)
-			noexcept(
-				is_nothrow_move_constructible<allocator_type>::value &&
-				is_nothrow_move_constructible<key_compare>::value);
-		explicit map(const allocator_type& a);
-		map(const map& m, const allocator_type& a);
-		map(map&& m, const allocator_type& a);
-		map(initializer_list<value_type> il, const key_compare& comp = key_compare());
-		map(initializer_list<value_type> il, const key_compare& comp, const allocator_type& a);
+			map(InputIterator first, InputIterator last, const key_compare& comp, const allocator_type& a)
+				: _tree(key_compare(comp)/*,  allocator */)
+			{ insert(first, last); };
+		map(const map& m) : _tree(m._tree)
+			{ insert(m.begin(), m.end()); /* why do i have to insert em if i already copy-created mine? */ };
+		/* TODO */
+		explicit map(const allocator_type& a) : _tree(/* allocator */) {};
+		/* TODO */
+		map(const map& m, const allocator_type& a) : _tree(m._tree /* , allocator */)
+			{ insert(m.begin(), m.end()); /* why do i have to insert em if i already copy-created mine? */ };
 		~map();
 
-		map& operator=(const map& m);
+		map& operator=(const map& m)
+		{
+			if (this != &m)
+			{
+                _tree.clear();
+                _tree.value_comp() = m._tree.value_comp();
+                _tree.__copy_assign_alloc(m._tree); // needs implementation
+                insert(m.begin(), m.end());
+            }
+            return (*this);
+		};
 
 		// iterators:
-		iterator begin();
-		const_iterator begin() const;
-		iterator end();
-		const_iterator end() const;
+		iterator begin() { return (_tree.begin()); };
+		const_iterator begin() const { return (_tree.begin()); };
+		iterator end() { return (_tree.end()); };
+		const_iterator end() const { return (_tree.end()); };
 
-		reverse_iterator rbegin();
-		const_reverse_iterator rbegin() const;
-		reverse_iterator rend();
-		const_reverse_iterator rend() const;
+		reverse_iterator rbegin() { return (reverse_iterator(end())); };
+		const_reverse_iterator rbegin() const
+			{ return (const_reverse_iterator(end())); };
+		reverse_iterator rend() { return (reverse_iterator(begin())); };
+		const_reverse_iterator rend() const
+			{ return (const_reverse_iterator(begin())); };
 
-		const_iterator         cbegin() const;
-		const_iterator         cend() const;
-		const_reverse_iterator crbegin() const;
-		const_reverse_iterator crend() const;
+		const_iterator         cbegin() const { return (begin()); };
+		const_iterator         cend() const { return (end()); };
+		const_reverse_iterator crbegin() const { return (rbegin()); };
+		const_reverse_iterator crend() const { return (rend()); };
 
 		// capacity:
-		bool      empty()    const;
-		size_type size()     const;
-		size_type max_size() const;
+		bool      empty()    const { return (_tree.size() == 0); };
+		size_type size()     const { return (_tree.size()); };
+		size_type max_size() const { return (_tree.max_size()); };
 
 		// element access:
 		mapped_type& operator[](const key_type& k);
@@ -114,8 +127,6 @@ namespace ft
 		template <class P>
 			pair<iterator, bool> insert(P&& p);
 		iterator insert(const_iterator position, const value_type& v);
-		template <class P>
-			iterator insert(const_iterator position, P&& p);
 		template <class InputIterator>
 			void insert(InputIterator first, InputIterator last);
 		void insert(initializer_list<value_type> il);
@@ -126,9 +137,9 @@ namespace ft
 		void clear();
 
 		// observers:
-		allocator_type get_allocator() const;
-		key_compare    key_comp()      const;
-		value_compare  value_comp()    const;
+		allocator_type get_allocator() const { return (allocator_type(_tree.__alloc())); }; // needs check
+		key_compare    key_comp()      const { }; // TODO
+		value_compare  value_comp()    const { return (value_compare(key_comp())); };
 
 		// map operations:
 		iterator find(const key_type& k);
@@ -143,6 +154,10 @@ namespace ft
 
 		pair<iterator,iterator>             equal_range(const key_type& k);
 		pair<const_iterator,const_iterator> equal_range(const key_type& k) const;
+
+	private:
+		_tree_type _tree;
+
 	};
 
 	template <class Key, class T, class Compare, class Allocator>
