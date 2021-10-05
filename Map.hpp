@@ -117,19 +117,45 @@ namespace ft
 		size_type max_size() const { return (_tree.max_size()); };
 
 		// element access:
-		mapped_type& operator[](const key_type& k);
+		mapped_type& operator[](const key_type& k)
+		{
+			/* PSEUDO - CODE */
+			/*
+			child = _tree.find_equal(pointer_to_begin, k);
+			if (child == nullptr)
+			{
+				new_node = construct_node_with_key(k);
+				_tree.insert(new_node);;
+			}
+			return (child or new_node value);
+			*/
+		};
 
 		mapped_type& at(const key_type& k);
-		const mapped_type& at(const key_type& k) const;
+		{
+			/* PSEUDO - CODE */
+			/*
+			node = _tree.find_equal(pointer_to_begin, k);
+			if (node == nullptr)
+				__throw_out_of_range("map::at:  key not found");
+			return node value;
+			**/
+		}
+		const mapped_type& at(const key_type& k) const
+		{
+			// same as non-const at
+		};
 
 		// modifiers:
-		pair<iterator, bool> insert(const value_type& v);
-		template <class P>
-			pair<iterator, bool> insert(P&& p);
+		/* all these functs depend on tree implementation */
+		pair<iterator, bool> insert(const value_type& v); 
 		iterator insert(const_iterator position, const value_type& v);
 		template <class InputIterator>
-			void insert(InputIterator first, InputIterator last);
-		void insert(initializer_list<value_type> il);
+			void insert(InputIterator first, InputIterator last)
+			{
+				for (const_iterator e = cend(); first != last; ++first)
+                	insert(e, *first); // depends on iterator implementation
+			};
 
 		iterator  erase(const_iterator position);
 		size_type erase(const key_type& k);
@@ -161,39 +187,42 @@ namespace ft
 	};
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool
-	operator==(const map<Key, T, Compare, Allocator>& x,
-			const map<Key, T, Compare, Allocator>& y);
+	bool operator==(const map<Key, T, Compare, Allocator>& x,
+			        const map<Key, T, Compare, Allocator>& y)
+	{
+		return ((x.size() == y.size()) && (equal(x.begin(), x.end(), y.begin())));
+	};
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator< (const map<Key, T, Compare, Allocator>& x,
+			        const map<Key, T, Compare, Allocator>& y)
+	{
+		return (lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()));
+	};
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator!=(const map<Key, T, Compare, Allocator>& x,
+			        const map<Key, T, Compare, Allocator>& y)
+	{ return (!(x == y)); };
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool
-	operator< (const map<Key, T, Compare, Allocator>& x,
-			const map<Key, T, Compare, Allocator>& y);
+	bool operator> (const map<Key, T, Compare, Allocator>& x,
+			        const map<Key, T, Compare, Allocator>& y)
+	{ return (y < x); };
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool
-	operator!=(const map<Key, T, Compare, Allocator>& x,
-			const map<Key, T, Compare, Allocator>& y);
+	bool operator>=(const map<Key, T, Compare, Allocator>& x,
+			        const map<Key, T, Compare, Allocator>& y)
+	{  return (!(x < y)); };
 
 	template <class Key, class T, class Compare, class Allocator>
-	bool
-	operator> (const map<Key, T, Compare, Allocator>& x,
-			const map<Key, T, Compare, Allocator>& y);
-
-	template <class Key, class T, class Compare, class Allocator>
-	bool
-	operator>=(const map<Key, T, Compare, Allocator>& x,
-			const map<Key, T, Compare, Allocator>& y);
-
-	template <class Key, class T, class Compare, class Allocator>
-	bool
-	operator<=(const map<Key, T, Compare, Allocator>& x,
-			const map<Key, T, Compare, Allocator>& y);
+	bool operator<=(const map<Key, T, Compare, Allocator>& x,
+			        const map<Key, T, Compare, Allocator>& y)
+	{ return (!(y < x)); };
 
 	// specialized algorithms:
 	template <class Key, class T, class Compare, class Allocator>
 	void
-	swap(map<Key, T, Compare, Allocator>& x, map<Key, T, Compare, Allocator>& y);
+	swap(map<Key, T, Compare, Allocator>& x, map<Key, T, Compare, Allocator>& y)
+	{ x.swap(y); };
 
 };
 
