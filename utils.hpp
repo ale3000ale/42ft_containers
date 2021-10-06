@@ -3,7 +3,7 @@
 # define UTILS_HPP
 
 # include <algorithm>
-//# include "iterator.hpp"
+# include "iterator.hpp"
 
 namespace ft 
 {
@@ -63,7 +63,7 @@ namespace ft
 	template <class InputIterator>
 	bool equal(InputIterator first1, InputIterator last1, InputIterator first2)
 	{
-		typedef typename iterator_traits<InputIterator1>::value_type v;
+		typedef typename iterator_traits<InputIterator>::value_type v;
 		return equal(first1, last1, first2, equal_to<v>());
 	}
 

@@ -7,14 +7,46 @@ Write your code in this editor and press "Run" button to compile and execute it.
 *******************************************************************************/
 
 #include <iostream>
-#include "VectorIterator.hpp"
+/* #include "VectorIterator.hpp"
 #include "iterator.hpp"
 #include "Vector.hpp"
-#include "Stack.hpp"
+#include "Stack.hpp" */
+#include <map>
+# include "Node.hpp"
+# include "pair.hpp"
+
+
+
+template <class T>
+struct min
+{
+	bool operator()(const T& x, const T& y) const
+	{
+		std::cout << "--------------MIN--------------" << std::endl;
+		return x < y;}
+};
+
+template <class T>
+struct max
+{
+	bool operator()(const T& x, const T& y) const
+	{
+		std::cout << "--------------MAX--------------" << std::endl;
+		return x > y;}
+};
 
 
 
 int main() {
+	//max<int> mx;
+	ft::pair<int, int> p(10,15);
+	ft::binary_node<ft::pair<int, int> > node1(p);
+	ft::binary_node<ft::pair<int, int> > node2(node1);
+	std::cout << "--------------NODE--------------" << std::endl;
+	std::cout << node1 << std::endl;
+	std::cout << node2 << std::endl;
+	
+
 	/* int const a[5] = {1,2,3,4,5};	
 	int b[5] = {1,2,3,4,5};
 	ft::VectorIterator<const int*> ci(a);
@@ -100,5 +132,4 @@ int main() {
 	std::cout << "--------------POP--------------" << std::endl;
 	s.pop();
 	std::cout << s.top() << std::endl; */
-	std::make_pair
 }
