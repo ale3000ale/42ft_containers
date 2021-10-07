@@ -82,6 +82,9 @@ namespace ft
 	/*
 		node
 	*/
+	/*
+		TODO gestire end_node, o aggiungo una variabile al nodo o creo una classe apposita, oppure nessuno dei due in realtá
+	*/
 	template <class T>
 	class tree_node
 	{
@@ -136,7 +139,7 @@ namespace ft
 			
 		private:
 			node_pointer							_begin_node;
-			node_pointer							_end_node;
+			node_pointer							_end_node; // element following the last element of the tree
 			pair<node_allocator, value_allocator>	_allocators;
 			size_type								_size;
 			value_compare							_comp;
@@ -184,22 +187,22 @@ namespace ft
 			pair<iterator, bool> insert(const value_type& v)
 			{
 				/* TODO */
-			}
+			};
 			iterator insert(const_iterator pos, const value_type& v)
 			{
 				/* TODO */
-			}
+			};
 			
 			iterator erase(const_iterator pos)
 			{
 				/* TODO */
-			}
+			};
 			iterator erase(const_iterator first, const_iterator last)
 			{
 				while (first != last)
 					first = erase(first);
 				return (iterator(last));
-			}
+			};
 			void erase(const key_type& k)
 			{
 				iterator i = find(k);
@@ -207,15 +210,15 @@ namespace ft
 					return (0);
 				erase(i);
 				return (1);
-			}
+			};
 
 			void clear()
 			{
-				// add destroy method
+				/* TODO add destroy method */
 				_size = 0;
 				_begin_node = nullptr;
 				_end_node = nullptr; // maybe not necessary
-			}
+			};
 
 			void swap(tree& other)
 			{
@@ -224,12 +227,78 @@ namespace ft
 				this->_allocators.swap(other._allocators);
 				ft::swap(this->_size, other._size);
 				ft::swap(this->_comp, other._comp);
-			}
-			/* NEEDED FUNCTIONS 
-				- Find
-				- Count
-				- lower_bound/upper_bound
-				- Equal_range */
+			};
 
+			iterator find(const key_type& k)
+			{
+				iterator i = lower_bound(k);
+				if ((i != end()) && (!_comp(k, *i)))
+					return (i);
+				return (end());
+			};
+			const_iteartor find(const key_type& k) const
+			{
+				const_iterator i = lower_bound(k);
+				if ((i != end()) && (!_comp(k, *i)))
+					return (i);
+				return (end());
+			};
+			
+			size_type count(const key_type& k) const
+			{
+				node_pointer ptr = _begin_node;
+				while (ptr)
+				{
+					if (_comp(k, ptr->value)) // k < value
+						ptr = ptr->left;
+					else if (_comp(ptr->value, k)) // value < k
+						ptr = ptr->right;
+					else // k == value
+						return (1);
+				}
+				return (0);
+			}
+
+			iterator lower_bound(const key_type& k, node_pointer root = _begin_node)
+			{
+				node_pointer result = _end_node;
+				while (root)
+				{
+					if (!(_comp(root->value, k))) // value >= k
+					{
+						result = root;
+						root = root->left;
+					}
+					else
+						root = root->right;
+				}
+				return iterator(result);
+			}
+			const_iterator lower_bound(const key_type& k) const
+				{ return (lower_bound(k)); };
+
+			iterator upper_bound(const key_type& k, node_pointer root = _begin_node)
+			{
+				node_pointer result = _end_node;
+				while (root)
+				{
+					if ((_comp(k, root->value))) // k < value
+					{
+						result = root;
+						root = root->left;
+					}
+					else
+						root = root->right;
+				}
+				return iterator(result);
+			}
+			const_iterator upper_bound(const key_type& k) const
+				{ return (upper_bound(k)); };
+			
+			pair<iterator,iterator> equal_range(const key_type& k)
+			{ return (pair<iterator,iterator>(lower_bound(k), upper_bound(k))); };
+
+			pair<const_iterator,const_iterator> equal_range(const key_type& k) const
+			{ return (pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k))); };
 	};
 };

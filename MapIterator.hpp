@@ -8,7 +8,7 @@
 namespace ft
 {
 	template <class T, class DiffType> /* T = type on which the node is templated (tree_node<t>) 
-										DiffType = Allocator::difference_type */
+											DiffType = Allocator::difference_type */
 	class tree_iterator
 	{
 		typedef tree_node<T>	_node_type; //tree_node to be implemented
@@ -58,6 +58,9 @@ namespace ft
 		{ return (x._ptr == y._ptr); };
 		bool operator!=(const tree_iterator& x, const tree_iterator& y)
 		{ return (!(x == y)); };
+
+		_node_type	*base() const
+			{ return(_ptr); };
 
 	private:
 		explicit tree_iterator(pointer p) : _ptr(p) {};
@@ -121,6 +124,9 @@ namespace ft
 		{ return (x._ptr == y._ptr); };
 		bool operator!=(const tree_const_iterator& x, const tree_const_iterator& y)
 		{ return (!(x == y)); };
+
+		const _node_type	*base() const
+			{ return(_ptr); };
 
 	private:
 		explicit tree_const__iterator(pointer p) : _ptr(p) {};
