@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Tree.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexmarcelli <alexmarcelli@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 16:36:23 by amarcell          #+#    #+#             */
-/*   Updated: 2021/10/04 18:52:14 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/07 02:04:41 by alexmarcell      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,42 @@
 # define TREE_H__
 
 # include "Node.hpp"
+# include "utils.hpp"
+# include "pair.hpp"
 # include <memory> // for std::allocator
+# include <__tree>
 
 namespace ft
 {
+	//TODO: sostituire il bynary node con il tree_node
 	template <class _Tp, class _Compare, class _Allocator>
 	class tree
 	{
 		public:
-			typedef _Tp                                      value_type;
-			typedef _Compare                                 value_compare;
-			typedef _Allocator                               allocator_type;
+			/*------------------*/
+			typedef typename _Tp                                     	value_type;
+			typedef	typename _Compare                                 	value_compare;
+			typedef typename _Allocator                               	allocator_type;
+								/*FALSE=black TRUE=red*/
+			typedef binary_node<pair<bool, value_type>					__node;
+			typedef typename __node*									__node_pointer;
+			typedef typename __node_pointer								__parent_pointer;
+			typedef typename __node_pointer								__iter_pointer;
 
 		private:
+			
+			
+			allocator_type				alloc;
+			value_type					content;
+			value_compare				cmp;
+			__node_pointer				root_pointer;
+			__node_pointer				end_leaf_pointer;
+			
+			/*------------------*/
+
 			typedef allocator_traits<allocator_type>         __alloc_traits;
 			typedef typename __make_tree_node_types<value_type,
-				typename __alloc_traits::void_pointer>::type
+					typename __alloc_traits::void_pointer>::type
 															_NodeTypes;
 			typedef typename _NodeTypes::key_type           key_type;
 		public:
@@ -44,110 +64,131 @@ namespace ft
 		public:
 			typedef typename _NodeTypes::__void_pointer        __void_pointer;
 
-			typedef typename _NodeTypes::__node_type           __node;
-			typedef typename _NodeTypes::__node_pointer        __node_pointer;
+			//typedef typename _NodeTypes::__node_type           __node;
+			//typedef typename _NodeTypes::__node_pointer        __node_pointer;
 
 			typedef typename _NodeTypes::__node_base_type      __node_base;
-			typedef typename _NodeTypes::__node_base_pointer   __node_base_pointer;
+			//typedef typename _NodeTypes::__node_base_pointer   __node_base_pointer;
 
 			typedef typename _NodeTypes::__end_node_type       __end_node_t;
 			typedef typename _NodeTypes::__end_node_pointer    __end_node_ptr;
 
-			typedef typename _NodeTypes::__parent_pointer      __parent_pointer;
-			typedef typename _NodeTypes::__iter_pointer        __iter_pointer;
+			//typedef typename _NodeTypes::__parent_pointer      __parent_pointer;
+			//typedef typename _NodeTypes::__iter_pointer        __iter_pointer;
 
 			typedef typename __rebind_alloc_helper<__alloc_traits, __node>::type __node_allocator;
 			typedef allocator_traits<__node_allocator>         __node_traits;
 
-		private:
-			// check for sane allocator pointer rebinding semantics. Rebinding the
-			// allocator for a new pointer type should be exactly the same as rebinding
-			// the pointer using 'pointer_traits'.
-			static_assert((is_same<__node_pointer, typename __node_traits::pointer>::value),
-						"Allocator does not rebind pointers in a sane manner.");
-			typedef typename __rebind_alloc_helper<__node_traits, __node_base>::type
-				__node_base_allocator;
-			typedef allocator_traits<__node_base_allocator> __node_base_traits;
-			static_assert((is_same<__node_base_pointer, typename __node_base_traits::pointer>::value),
-						"Allocator does not rebind pointers in a sane manner.");
-
-		private:
-			__iter_pointer                                     __begin_node_;
-			__compressed_pair<__end_node_t, __node_allocator>  __pair1_;
-			__compressed_pair<size_type, value_compare>        __pair3_;
-
 		public:
 			__iter_pointer __end_node()
 			{
-				return static_cast<__iter_pointer>(
-						pointer_traits<__end_node_ptr>::pointer_to(__pair1_.first())
-				);
+				return (end_leaf_pointer);
 			}
 		
 			__iter_pointer __end_node() const
 			{
-				return static_cast<__iter_pointer>(
-					pointer_traits<__end_node_ptr>::pointer_to(
-						const_cast<__end_node_t&>(__pair1_.first())
-					)
-				);
+				return const_cast<__iter_pointer&>(end_leaf_pointer);
 			}
 			
 			__node_allocator& __node_alloc()  
-				{return __pair1_.second();}
+			{
+				return (alloc());
+			}
 		private:
 			
-			const __node_allocator& 	__node_alloc() const 
-				{return __pair1_.second();}
+			const 	__node_allocator& 	__node_alloc() const 
+			{
+				return (alloc());
+			}
 			
-				__iter_pointer& 	__begin_node()  {return __begin_node_;}
+			__iter_pointer& 	__begin_node()
+			{
+				return(root_pointer);
+			}
 			
-			const __iter_pointer&	__begin_node() const  {return __begin_node_;}
+			const 	__iter_pointer&	__begin_node() const  
+			{
+				 return const_cast<__iter_pointer&>(root_pointer);
+			}
 		public:
 			
 			allocator_type 	__alloc() const 
-				{return allocator_type(__node_alloc());}
+			{
+				return allocator_type(__node_alloc());
+			}
 		private:
-			
-				size_type& 	size()  {return __pair3_.first();}
+			//TODO: non lo so
+			//size_type& 	size()  {}
 		public:
+			//TODO: non lo so
+			//const size_type& size() const  {}
 			
-			const size_type& size() const  {return __pair3_.first();}
-			
-				value_compare& value_comp()  {return __pair3_.second();}
+			value_compare& value_comp()
+			{
+				return (cmp);
+			}
 			
 			const value_compare& value_comp() const 
-				{return __pair3_.second();}
+			{
+				return (cmp);
+			}
 		public:
 
-			
-			__node_pointer __root() const 
-				{return static_cast<__node_pointer>(__end_node()->__left_);}
-
-			__node_base_pointer* __root_ptr() const  {
-				return _VSTD::addressof(__end_node()->__left_);
+			__node __root() const 
+			{
+				return *root_pointer;
 			}
 
+			__node_pointer __root_ptr() const  
+			{
+				return root_pointer
+			}
+			
 			typedef __tree_iterator<value_type, __node_pointer, difference_type>             iterator;
 			typedef __tree_const_iterator<value_type, __node_pointer, difference_type> const_iterator;
 
-			explicit tree(const value_compare& __comp)
-				_(
-					is_nothrow_default_constructible<__node_allocator>::value &&
-					is_nothrow_copy_constructible<value_compare>::value);
-			explicit tree(const allocator_type& __a);
-			tree(const value_compare& __comp, const allocator_type& __a);
-			tree(const tree& __t);
-			tree& operator=(const tree& __t);
-			template <class _InputIterator>
-				void __assign_unique(_InputIterator __first, _InputIterator __last);
-			template <class _InputIterator>
-				void __assign_multi(_InputIterator __first, _InputIterator __last);
+			/*----------------------------------CONSTRUCTUR----------------------------------*/
+			explicit tree(const value_compare& __comp): cmp(__comp)
+			{
+				__begin_node() = __end_node();
+			};
+
+			explicit tree(const allocator_type& __a): alloc(__a)
+			{
+				__begin_node() = __end_node()
+			};
+
+			tree(const value_compare& __comp, const allocator_type& __a): cmp(__comp), alloc(__a)
+			{
+				__begin_node() = __end_node()
+			};
+
+			tree(const tree& __t)
+			{
+				*this = __t;
+			};
+
+			tree& operator=(const tree& __t)
+			{
+				if (this != &__t)
+			};
 
 			~tree();
 
 			
-			iterator begin()   {return       iterator(__begin_node());}
+			template <class _InputIterator>
+			void __assign_unique(_InputIterator __first, _InputIterator __last);
+
+			template <class _InputIterator>
+			void __assign_multi(_InputIterator __first, _InputIterator __last);
+
+			
+
+			//TODO: vedere l'iteratore cosa chiede
+			iterator begin()   
+			{
+				return       iterator(__begin_node());
+			}
 			
 			const_iterator begin() const  {return const_iterator(__begin_node());}
 			
@@ -156,7 +197,7 @@ namespace ft
 			const_iterator end() const  {return const_iterator(__end_node());}
 
 			
-			size_type max_size() const 
+			size_type max_size() const
 			{return std::min<size_type>(
 										__node_traits::max_size(__node_alloc()),
 										numeric_limits<difference_type >::max());}
