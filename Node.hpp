@@ -6,7 +6,7 @@
 /*   By: alexmarcelli <alexmarcelli@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 17:11:39 by amarcell          #+#    #+#             */
-/*   Updated: 2021/10/06 18:32:33 by alexmarcell      ###   ########.fr       */
+/*   Updated: 2021/10/07 16:57:26 by alexmarcell      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ namespace ft
 			__node_type_pointer					left;
 			__node_type_pointer					right;
 			__node_type_pointer         		parent;
+			bool								is_black;
 
 			void __set_parent(__node_type &_p)
 			{
@@ -43,24 +44,23 @@ namespace ft
 			{}
 
 			binary_node(__value_type _content) : 
-				content(_content), left(nullptr), right(nullptr), parent(nullptr)
+				content(_content), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
 			{}
 
-			binary_node(__node_type_pointer _parent)
+			binary_node(__node_type_pointer _parent): parent(_parent), is_black(false)
 			{
-				parent = _parent;
 			}
 
 			binary_node(__value_type _content, __node_type &_parent) : 
-				content(_content), parent(&_parent)
+				content(_content), parent(&_parent), is_black(false)
 			{}
 
 			binary_node(__value_type _content, __node_type &_parent, __node_type &_left, __node_type &_right) : 
-				content(_content), left(&_left), right(&_right), parent(&_parent)
+				content(_content), left(&_left), right(&_right), parent(&_parent), is_black(false)
 			{}
 
 			binary_node(__value_type _content, __node_type &_left, __node_type &_right) : 
-				content(_content),  left(&_left), right(&_right)
+				content(_content),  left(&_left), right(&_right), is_black(false)
 			{}
 			
 
@@ -77,6 +77,7 @@ namespace ft
 					right = nd.right;
 					parent = nd.parent;
 					content = nd.content;
+					is_black = nd.is_black;
 				}
 				return *this;
 			}
