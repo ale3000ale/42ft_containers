@@ -358,7 +358,8 @@ namespace ft
 				}
 			}
 		public:
-			void delete(__node_pointer &n)
+
+			void delete_node(__node_pointer &n)
 			{
 				/* Si assume che n ha al massimo un figlio non nullo */
 				if (!is_leaf(n))
@@ -374,6 +375,15 @@ namespace ft
 					}
 				}
 				destroy_node(n);
+			}
+
+			void clear_all(__node_pointer &n)
+			{
+				if (n->right != nullptr)
+					clear_all(n->right);
+				if (n->left != nullptr)
+					clear_all(n->left);
+				delete_node(n);
 			}
 	};
 };
