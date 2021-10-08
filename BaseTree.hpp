@@ -87,6 +87,22 @@ namespace ft
 				return (node);
 			}
 
+			void destroy_node(__node_pointer &n)
+			{
+				__node_pointer p = n->parent;
+				_alloc.destroy(n);
+				_alloc.deallocate(&n, 1);
+				
+				if (p != nullptr)
+				{
+					if (n == p->left)
+						n->parent->left = nullptr;
+					else
+						n->parent->right = nullptr;
+				}
+				n = nullptr;
+			}
+
 			__node_pointer find_node(value_type value)
 			{
 				__node_pointer node = *root_pointer;
@@ -148,8 +164,24 @@ namespace ft
 					return n->parent->left;
 			}
 
+			bool is_leaf(__node_pointer n)
+			{
+				return (n->left == nullptr &&
+						n->right == nullptr &&
+						n->parent != nullptr);
+			}
+
 			/*------------------------NODE INSERT------------------------*/
 		private:
+			//TODO: rotation
+			__node_pointer rotate_left(__node_pointer &n)
+			{
+				if (n == nullptr)
+				{
+
+				}
+			}
+
 			void insert_case1(__node_pointer &n)		//insert in root
 			{
 				if (n->parent == NULL)
@@ -207,7 +239,6 @@ namespace ft
 			__node_pointer insert(value_type value)
 			{
 				__node_pointer node, parent;
-
 				if (root_pointer == nullptr)
 				{
 					root_pointer = create_node(value);
@@ -219,11 +250,25 @@ namespace ft
 					node = create_node(value, parent);
 				else
 					node->content = value;
+				//balancer
 				insert_case1(node);
 				return (node);
 			}
 			/*------------------------NODE DELETE------------------------*/
 		private:
+			void replace_node(__node_pointer &n, __node_pointer &child)
+			{
+				child->left = n->left;
+				child->right = n->right;
+				if ( n->parent != nullptr)
+					child->parent = n->parent;
+				else
+				{
+					root_pointer = child;
+					child->parent = nullptr;	
+				}		
+			}
+
 			void delete_case1(node n)
 			{
 				if (n->parent == NULL)
@@ -313,20 +358,22 @@ namespace ft
 				}
 			}
 		public:
-			void delete_one_child(__node_pointer n) 
+			void delete(__node_pointer &n)
 			{
 				/* Si assume che n ha al massimo un figlio non nullo */
-				//TODO: bool is_leaf(__node_pointer n;
-				__node_pointer child = (is_leaf(n->right)) ? n->left: n->right;	
-				//TODO:  __node_pointer replace_node(__node_pointer n, __node_pointer child);
-				replace_node(n, child);
-				if (n->is_black == BLACK) {
-					if (child->is_black == RED)
-						child->is_black = BLACK;
-					else
-						delete_case1(child);
+				if (!is_leaf(n))
+				{
+					__node_pointer child = (is_leaf(n->right)) ? n->left: n->right;	
+					replace_node(n, child);
+					if (n->is_black == BLACK) 
+					{
+						if (child->is_black == RED)
+							child->is_black = BLACK;
+						else
+							delete_case1(child);
+					}
 				}
-				free(n);
+				destroy_node(n);
 			}
 	};
 };
