@@ -21,9 +21,10 @@ namespace ft
 			typedef typename _Tp                                     	value_type;
 			typedef	typename _Compare                                 	value_compare;
 			typedef typename _Allocator                               	allocator_type;
+			typedef typename value_type::first_type						key_type;
 								/*FALSE=black TRUE=red*/
-			typedef binary_node<value_type>						__node;
-			typedef binary_node<value_type>*						__node_pointer;
+			typedef binary_node<value_type>								__node;
+			typedef binary_node<value_type>*							__node_pointer;
 			typedef typename __node_pointer								__parent_pointer;
 			typedef typename __node_pointer								__iter_pointer;
 
@@ -103,7 +104,7 @@ namespace ft
 				n = nullptr;
 			}
 
-			__node_pointer find_node(value_type value)
+			__node_pointer find_node(key_type value)
 			{
 				__node_pointer node = *root_pointer;
 				while (node != nullptr)
@@ -118,7 +119,7 @@ namespace ft
 				return (node);
 			}
 
-			__node_pointer find_node(value_type value, __node_pointer &parent)
+			__node_pointer find_node(key_type value, __node_pointer &parent)
 			{
 				__node_pointer node = *root_pointer;
 				parent = node;
@@ -245,7 +246,7 @@ namespace ft
 					root_pointer->is_black = true;
 					return (root_pointer);
 				}
-				node = find_node(value, parent);
+				node = find_node(value.first , parent);
 				if (node == nullptr)
 					node = create_node(value, parent);
 				else
