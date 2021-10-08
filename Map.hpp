@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_H__
-# define MAP_H__
+#ifndef MAP_HPP
+# define MAP_HPP
 
 # include <memory> // for std::allocator
+# include <exception> // for std::out_of_range
 # include "utils.hpp"
 # include "pair.hpp"
 # include "iterator.hpp"
@@ -26,7 +27,7 @@ std::map<int, int> t;
 namespace ft
 {
 	template <class Key, class T, class Compare = less<Key>,
-			class Allocator = std::allocator< pair <const Key, T> > >
+		class Allocator = std::allocator< pair <const Key, T> > >
 	class map
 	{
 	public:
@@ -116,35 +117,31 @@ namespace ft
 		// element access:
 		mapped_type& operator[](const key_type& k)
 		{
-			/* PSEUDO - CODE */
-			/*
-			child = _tree.find_equal(pointer_to_begin, k);
-			if (child == nullptr)
+			iterator node = find(k);
+			if (node == cend())
 			{
-				new_node = construct_node_with_key(k);
-				_tree.insert(new_node);;
+				value_type v = value_type(k, mapped_type()); // dont know if it is correct
+				node = _tree.insert(v);
 			}
-			return (child or new_node value);
-			*/
+			return ((*node).second);
 		};
 
 		mapped_type& at(const key_type& k);
 		{
-			/* PSEUDO - CODE */
-			/*
-			node = _tree.find_equal(pointer_to_begin, k);
-			if (node == nullptr)
-				__throw_out_of_range("map::at:  key not found");
-			return node value;
-			**/
+			iterator node = find(k);
+			if (node == cend())
+				throw(std::out_of_range("map::at:  key not found"));
+			return ((*node).second);
 		}
 		const mapped_type& at(const key_type& k) const
 		{
-			// same as non-const at
+			iterator node = find(k);
+			if (node == cend())
+				throw(std::out_of_range("map::at:  key not found"));
+			return ((*node).second);
 		};
 
 		// modifiers:
-		/* all these functs depend on tree implementation */
 		pair<iterator, bool>	insert(const value_type& v)
 			{ return (_tree.insert(v)); };
 		iterator				insert(const_iterator position, const value_type& v)
@@ -152,7 +149,7 @@ namespace ft
 		template <class InputIterator>
 			void insert(InputIterator first, InputIterator last)
 			{
-				for (const_iterator e = cend(); first != last; ++first)
+				for (const_iterator e = cend(); first != last; ++first) // needs check
                 	insert(e, *first);
 			};
 

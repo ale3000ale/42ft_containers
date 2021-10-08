@@ -26,9 +26,9 @@ namespace ft
 		~tree_iterator() {};
 
 		reference operator*() const
-			{ return (_ptr->value); };
+			{ return (_ptr->value()); };
 		pointer operator->() const
-			{ return (&(_ptr->value)); };
+			{ return (&(_ptr->value())); };
 
 		tree_iterator& operator++()
 		{
@@ -92,9 +92,9 @@ namespace ft
 		~tree_const_iterator() {};
 
 		reference operator*() const
-			{ return (_ptr->value); };
+			{ return (_ptr->value()); };
 		pointer operator->() const
-			{ return (&(_ptr->value)); };
+			{ return (&(_ptr->value())); };
 
 		tree_const_iterator& operator++()
 		{
