@@ -27,11 +27,12 @@ namespace ft
 			typedef binary_node<value_type>*							__node_pointer;
 			typedef typename __node_pointer								__parent_pointer;
 			typedef typename __node_pointer								__iter_pointer;
+			typedef std::allocator<__node>								allocator_node;
 
 		private:
 			
 			
-			allocator_type				alloc;
+			allocator_node				alloc;
 			value_type					content;
 			value_compare				cmp;
 			__node_pointer				root_pointer;
@@ -42,17 +43,14 @@ namespace ft
 
 			explicit base_tree(const value_compare& __comp): cmp(__comp), size(0)
 			{
-				__begin_node() = __end_node();
 			};
 
 			explicit base_tree(const allocator_type& __a): alloc(__a), size(0)
 			{
-				__begin_node() = __end_node()
 			};
 
 			base_tree(const value_compare& __comp, const allocator_type& __a): cmp(__comp), alloc(__a), size(0)
 			{
-				__begin_node() = __end_node()
 			};
 
 			base_tree(const tree& __t)
@@ -144,44 +142,76 @@ namespace ft
 			}
 
 			/*------------------------TREE NODE MANAGMENT------------------------*/
-			__node_pointer grandparent(const __node_pointer &n) const
-			{
-				return n->parent->parent;
-			}
+			private:
 
-			__node_pointer uncle(const __node_pointer &n) const
-			{
-				if (n->parent == grandparent(n)->left)
-					return grandparent(n)->right;
-				else
-					return grandparent(n)->left;
-			}
+				__node_pointer grandparent(const __node_pointer &n) const
+				{
+					return n->parent->parent;
+				}
 
-			__node_pointer sibling(const __node_pointer &n) const
-			{
-				if (n == n->parent->left)
-					return n->parent->right;
-				else
-					return n->parent->left;
-			}
+				__node_pointer uncle(const __node_pointer &n) const
+				{
+					if (n->parent == grandparent(n)->left)
+						return grandparent(n)->right;
+					else
+						return grandparent(n)->left;
+				}
 
-			bool is_leaf(__node_pointer n)
-			{
-				return (n->left == nullptr &&
-						n->right == nullptr &&
-						n->parent != nullptr);
-			}
+				__node_pointer sibling(const __node_pointer &n) const
+				{
+					if (n == n->parent->left)
+						return n->parent->right;
+					else
+						return n->parent->left;
+				}
+
+				bool is_leaf(__node_pointer n)
+				{
+					return (n->left == nullptr &&
+							n->right == nullptr &&
+							n->parent != nullptr);
+				}
+
+				//TODO: rotation
+				void rotate_left(__node_pointer &n)
+				{
+					__node_pointer supp = n->right->left;
+					n->right->parent = n->parent;
+					if (n->parent != nullptr)
+					{
+						((n->parent->left == n) ? n->parent->left : n->parent->right) = n->right;
+						n->right->parent = n->parent;
+					}
+					else
+						root_pointer = n->right;
+					n->right->left = n;
+					n->parent = n->right;
+					n->right = supp; 
+					supp->parent = n;
+				}
+
+				void rotate_right(__node_pointer &n)
+				{
+					__node_pointer supp = n->left->right;
+					n->left->parent = n->parent;
+					if (n->parent != nullptr)
+					{
+						((n->parent->left == n) ? n->parent->left : n->parent->right) = n->left;
+						n->left->parent = n->parent;
+					}
+					else
+						root_pointer = n->left;
+					n->left->right = n;
+					n->parent = n->left;
+					n->left = supp; 
+					supp->parent = n;
+					return (n);
+				}
+
 
 			/*------------------------NODE INSERT------------------------*/
-		private:
-			//TODO: rotation
-			__node_pointer rotate_left(__node_pointer &n)
-			{
-				if (n == nullptr)
-				{
-
-				}
-			}
+		
+			
 
 			void insert_case1(__node_pointer &n)		//insert in root
 			{
