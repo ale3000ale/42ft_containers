@@ -12,18 +12,19 @@ Write your code in this editor and press "Run" button to compile and execute it.
 #include "Vector.hpp"
 #include "Stack.hpp" */
 #include <map>
-# include "Node.hpp"
+# include "BaseTree.hpp"
 # include "pair.hpp"
 
 
 
 template <class T>
-struct min
+struct min_pair
 {
 	bool operator()(const T& x, const T& y) const
 	{
-		std::cout << "--------------MIN--------------" << std::endl;
-		return x < y;}
+		//std::cout << "--------------MIN--------------" << std::endl;
+		return x < y;
+	}
 };
 
 template <class T>
@@ -31,21 +32,47 @@ struct max
 {
 	bool operator()(const T& x, const T& y) const
 	{
-		std::cout << "--------------MAX--------------" << std::endl;
+		//std::cout << "--------------MAX--------------" << std::endl;
 		return x > y;}
 };
 
 
 
 int main() {
-	//max<int> mx;
-	ft::pair<int, int> p(10,15);
-	ft::binary_node<ft::pair<int, int> > node1(p);
-	ft::binary_node<ft::pair<int, int> > node2(node1);
-	std::cout << "--------------NODE--------------" << std::endl;
-	std::cout << node1 << std::endl;
-	std::cout << node2 << std::endl;
 	
+	typedef ft::pair<std::string, int> _p;
+	min_pair<std::string> min;
+	_p p1("ciao", 3);
+	_p p2("paco", 6);
+	_p p3("ale", 16);
+	_p p4("taco", 66);
+	_p p5("uli", 166);
+	//_p p6("zli", 166);
+
+	ft::base_tree<_p, min_pair<std::string>, std::allocator<_p> > tree(min);
+	std::cout << "--------------TREE--------------" << std::endl;
+	std::cout << "--------------p1--------------" << std::endl;
+	std::cout << *tree.insert(p1) << std::endl;
+	std::cout << "--------------p2--------------" << std::endl;
+	std::cout << *tree.insert(p2) << std::endl;
+	std::cout << "--------------p3--------------" << std::endl;
+	std::cout << *tree.insert(p3) << std::endl;
+	std::cout << "--------------p4--------------" << std::endl;
+	std::cout << *tree.insert(p4) << std::endl;
+	std::cout << "--------------p5--------------" << std::endl;
+	//std::cout << *tree.insert(p5) << std::endl;
+	std::cout << "--------------p6--------------" << std::endl;
+	//std::cout << *tree.insert(p6) << std::endl;
+	//tree.root_pointer = tree.create_node(p1);
+	std::cout << "--------------ROOT--------------" << std::endl;
+	std::cout << *tree.root_pointer << std::endl;
+	std::cout << "L" << *tree.root_pointer->left << std::endl;
+	std::cout << "R" << *tree.root_pointer->right << std::endl;
+	std::cout << "RR" << *tree.root_pointer->right->right << std::endl;
+
+	//_p p1("ciao", 3);
+	//tree.insert(p1);
+
 
 	/* int const a[5] = {1,2,3,4,5};	
 	int b[5] = {1,2,3,4,5};
