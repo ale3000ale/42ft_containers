@@ -41,15 +41,15 @@ struct max
 int main() {
 	
 	typedef ft::pair<std::string, int> _p;
-	min_pair<std::string> min;
 	_p p1("ciao", 3);
 	_p p2("paco", 6);
 	_p p3("ale", 16);
 	_p p4("taco", 66);
 	_p p5("uli", 166);
-	//_p p6("zli", 166);
+	_p p6("va", 166);
+	_p p7("za", 166);
 
-	ft::base_tree<_p, min_pair<std::string>, std::allocator<_p> > tree(min);
+	ft::base_tree<_p> tree;
 	std::cout << "--------------TREE--------------" << std::endl;
 	std::cout << "--------------p1--------------" << std::endl;
 	std::cout << *tree.insert(p1) << std::endl;
@@ -60,15 +60,20 @@ int main() {
 	std::cout << "--------------p4--------------" << std::endl;
 	std::cout << *tree.insert(p4) << std::endl;
 	std::cout << "--------------p5--------------" << std::endl;
-	//std::cout << *tree.insert(p5) << std::endl;
+	std::cout << *tree.insert(p5) << std::endl;
 	std::cout << "--------------p6--------------" << std::endl;
-	//std::cout << *tree.insert(p6) << std::endl;
+	std::cout << *tree.insert(p6) << std::endl;
+	std::cout << "--------------p7--------------" << std::endl;
+	std::cout << *tree.insert(p7) << std::endl;
 	//tree.root_pointer = tree.create_node(p1);
 	std::cout << "--------------ROOT--------------" << std::endl;
 	std::cout << *tree.root_pointer << std::endl;
 	std::cout << "L" << *tree.root_pointer->left << std::endl;
 	std::cout << "R" << *tree.root_pointer->right << std::endl;
 	std::cout << "RR" << *tree.root_pointer->right->right << std::endl;
+	std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
+	std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
+	std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
 
 	//_p p1("ciao", 3);
 	//tree.insert(p1);

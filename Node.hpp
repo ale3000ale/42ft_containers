@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Node.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexmarcelli <alexmarcelli@student.42.f    +#+  +:+       +#+        */
+/*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 17:11:39 by amarcell          #+#    #+#             */
-/*   Updated: 2021/10/11 17:49:49 by alexmarcell      ###   ########.fr       */
+/*   Updated: 2021/10/13 19:07:21 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ namespace ft
 			__node_type_pointer         		parent;
 			bool								is_black;
 
-			void __set_parent(__node_type &_p)
+			void __set_parent(__node_type_pointer _p)
 			{
-				parent = &_p;
+				parent = _p;
 			}
 
 		public:

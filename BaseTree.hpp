@@ -13,7 +13,9 @@ namespace ft
 	# define RED false
 
 	//TODO: sostituire il bynary node con il tree_node
-	template <class _Tp, class _Compare, class _Allocator>
+	template <	class _Tp,
+				class _Compare = ft::less<_Tp> , 
+				class _Allocator = std::allocator<binary_node<_Tp> > >
 	class base_tree
 	{
 		public:
@@ -40,6 +42,10 @@ namespace ft
 			size_t						size;
 
 		public:
+
+			base_tree(): size(0)
+			{
+			};
 
 			explicit base_tree(const value_compare& __comp): cmp(__comp),root_pointer(nullptr), size(0)
 			{
@@ -79,7 +85,7 @@ namespace ft
 			__node_pointer create_node(value_type value, __node_pointer &parent)
 			{
 				__node_pointer node = create_node(value);
-				if (cmp(value.first, parent->value.first))
+				if (cmp(value, parent->value))
 						parent->left = node;
 					else
 						parent->right = node;
@@ -105,14 +111,14 @@ namespace ft
 				size--;
 			}
 
-			__node_pointer find_node(key_type value)
+			__node_pointer find_node(value_type const value)
 			{
 				__node_pointer node = *root_pointer;
 				while (node != nullptr)
 				{
 					if (value == node->value)
 						return (node);
-					else if (ccmp(value, node->value.first))	//default    node->value < value
+					else if (cmp(value, node->value))	//default    node->value < value
 						node = node->left;
 					else
 						node = node->right;
@@ -120,15 +126,15 @@ namespace ft
 				return (node);
 			}
 
-			__node_pointer find_node(key_type value, __node_pointer &parent)
+			__node_pointer find_node(value_type const value, __node_pointer &parent)
 			{
 				__node_pointer node = root_pointer;
 				parent = node;
 				while (node != nullptr)
 				{
-					if (value == node->value.first)
+					if (value == node->value)
 						return (node);
-					else if (cmp(value, node->value.first))	//default    node->value < value
+					else if (cmp(value, node->value))	//default    node->value < value
 					{
 						std::cout << "inside find left: " << std::endl;
 						parent = node;
@@ -178,25 +184,32 @@ namespace ft
 			}
 
 
-			void rotate_left(__node_pointer &n)
+			void rotate_left(__node_pointer n)
 			{
+				std::cout << "rotate left " << *n <<std::endl;
+				
 				__node_pointer supp = n->right->left;
 				n->right->parent = n->parent;
+				//std::cout << "SUPP: CORRECT "<< *n << " \n";
 				if (n->parent != nullptr)
 				{
 					((n->parent->left == n) ? n->parent->left : n->parent->right) = n->right;
 					n->right->parent = n->parent;
 				}
 				else
+				{
 					root_pointer = n->right;
+				}
 				n->right->left = n;
 				n->parent = n->right;
 				n->right = supp; 
-				supp->parent = n;
+				if (supp != nullptr)
+					supp->parent = n;
 			}
 
-			void rotate_right(__node_pointer &n)
+			void rotate_right(__node_pointer n)
 			{
+				std::cout << "rotate rigth: " << *n <<std::endl;
 				__node_pointer supp = n->left->right;
 				n->left->parent = n->parent;
 				if (n->parent != nullptr)
@@ -208,8 +221,9 @@ namespace ft
 					root_pointer = n->left;
 				n->left->right = n;
 				n->parent = n->left;
-				n->left = supp; 
-				supp->parent = n;
+				n->left = supp;
+				if (supp != nullptr)
+					supp->parent = n;
 			}
 
 
@@ -217,24 +231,27 @@ namespace ft
 		
 			
 
-			void insert_case1(__node_pointer &n)		//insert in root
+			void insert_case1(__node_pointer n)		//insert in root
 			{
+				std::cout << "insert case 1\n"; 
 				if (n->parent == nullptr)
 					n->is_black = BLACK;
 				else
 					insert_case2(n);
 			}
 
-			void insert_case2(__node_pointer &n) 
+			void insert_case2(__node_pointer n) 
 			{
+				std::cout << "insert case 2\n"; 
 				if (n->parent->is_black == BLACK)
 					return; 
 				else
 					insert_case3(n);
 			}
 
-			void insert_case3(__node_pointer &n)
+			void insert_case3(__node_pointer n)
 			{
+				std::cout << "insert case 3\n"; 
 				if (uncle(n) != NULL && uncle(n)->is_black == RED) {
 					n->parent->is_black = BLACK;
 					uncle(n)->is_black = BLACK;
@@ -245,8 +262,9 @@ namespace ft
 					insert_case4(n);
 			}
 
-			void insert_case4(__node_pointer &n)
+			void insert_case4(__node_pointer n)
 			{
+				std::cout << "insert case 4\n"; 
 				if (n == n->parent->right && n->parent == grandparent(n)->left) {
 					rotate_left(n->parent);
 					n = n->left;
@@ -254,11 +272,12 @@ namespace ft
 					rotate_right(n->parent);
 					n = n->right;
 				}
-					insert_case5(n);
+				insert_case5(n);
 			}
 
-			void insert_case5(__node_pointer &n)
+			void insert_case5(__node_pointer n)
 			{
+				std::cout << "insert case 5\n";
 				n->parent->is_black = BLACK;
 				grandparent(n)->is_black = RED;
 				if (n == n->parent->left && n->parent == grandparent(n)->left) {
@@ -278,15 +297,17 @@ namespace ft
 					root_pointer = create_node(value);
 					root_pointer->is_black = true;
 					//std::cout << "root \n"; 
-					return (root_pointer);
+					node = root_pointer;
 				}
-				
-				node = find_node(value.first , parent);
-				std::cout << "find: " << parent << std::endl;
-				if (node == nullptr)
-					node = create_node(value, parent);
 				else
-					node->value = value;
+				{
+					node = find_node(value , parent);
+					std::cout << "find: " << parent << std::endl;
+					if (node == nullptr)
+						node = create_node(value, parent);
+					else
+						node->value = value;
+				}
 				//balancer
 				insert_case1(node);
 				return (node);
