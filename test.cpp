@@ -48,6 +48,8 @@ int main() {
 	_p p5("uli", 166);
 	_p p6("va", 166);
 	_p p7("za", 166);
+	_p p8("baci", 166);
+	_p p9("bz", 166);
 
 	ft::base_tree<_p> tree;
 	std::cout << "--------------TREE--------------" << std::endl;
@@ -65,6 +67,10 @@ int main() {
 	std::cout << *tree.insert(p6) << std::endl;
 	std::cout << "--------------p7--------------" << std::endl;
 	std::cout << *tree.insert(p7) << std::endl;
+	std::cout << "--------------p8--------------" << std::endl;
+	std::cout << *tree.insert(p8) << std::endl;
+	std::cout << "--------------p9--------------" << std::endl;
+	std::cout << *tree.insert(p9) << std::endl;
 	//tree.root_pointer = tree.create_node(p1);
 	std::cout << "--------------ROOT--------------" << std::endl;
 	std::cout << *tree.root_pointer << std::endl;
@@ -74,6 +80,29 @@ int main() {
 	std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
 	std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
 	std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
+	std::cout << "______LEFT______" << std::endl;
+	std::cout << "LR" << *tree.root_pointer->left->right << std::endl;
+	std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
+
+
+	std::cout << "--------------DELETE--------------" << std::endl;
+	tree.delete_node(tree.find_node(p2));
+	std::cout << "--------------ROOT--------------" << std::endl;
+	std::cout << *tree.root_pointer << std::endl;
+	std::cout << "L" << *tree.root_pointer->left << std::endl;
+	std::cout << "R" << *tree.root_pointer->right << std::endl;
+	std::cout << "RR" << *tree.root_pointer->right->right << std::endl;
+	std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
+	//std::cout << "RLR" << *tree.root_pointer->right->left->right << std::endl;
+	std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
+	std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
+	std::cout << "______LEFT______" << std::endl;
+	std::cout << "LR" << *tree.root_pointer->left->right << std::endl;
+	std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
+	//tree.clear_all();
+	
+
+
 
 	//_p p1("ciao", 3);
 	//tree.insert(p1);
