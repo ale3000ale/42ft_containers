@@ -142,6 +142,37 @@ namespace ft
 				return (node);
 			}
 
+			__node_pointer find_last(__node_pointer n)
+			{
+				std::cout << "last " << std::endl;
+				if (n->right == nullptr)
+					return n;
+				__node_pointer tmp = n->right;
+				while (tmp->right != nullptr)
+					tmp = tmp->right;
+				return tmp;
+			}
+
+			__node_pointer find_last()
+			{
+				return find_last(root_pointer);
+			}
+
+			__node_pointer find_first(__node_pointer n)
+			{
+				std::cout << "first " << std::endl;
+				if (n->left == nullptr)
+					return n;
+				__node_pointer tmp = n->left;
+				while (tmp->left != nullptr)
+					tmp = tmp->left;
+				return tmp;
+			}
+			__node_pointer find_first()
+			{
+				return find_first(root_pointer);
+			}
+
 			/*------------------------TREE NODE MANAGMENT------------------------*/
 		private:
 
@@ -439,22 +470,27 @@ namespace ft
 
 			void delete_node(__node_pointer n)
 			{
+				__node_pointer tmp;
+				if (n->left != nullptr && n->right != nullptr)
+				{
+					// childrens > 1
+					std::cout << "delete double child" << *n << std::endl;
+					tmp = find_last(n->left);
+					ft::swap<value_type>(tmp->value, n->value);
+					delete_node(tmp);
+					return;
+				}
+
 				/* Si assume che n ha al massimo un figlio non nullo */
 				std::cout << "delete: " << *n << std::endl;
 				__node_pointer child = (n->left == nullptr) ? n->right: n->left;
+				if (n->is_black == BLACK )
+					delete_case1(n);
 				replace_node(n, child);
-				if(n->parent != nullptr 
-					&& sibling(n) != nullptr
-					&& (sibling(n)->left != nullptr || sibling(n)->right != nullptr ))
-					delete_case1(child);
-				
-
-				//__node_pointer child = n;
-				//n = n->parent;
-				//delete_case1(n);
 				
 				if (n->is_black == BLACK && child != nullptr) 
 				{
+
 					std::cout << "AO " << std::endl;
 					if (child->is_black == RED)
 						child->is_black = BLACK;

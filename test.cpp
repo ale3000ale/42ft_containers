@@ -93,7 +93,7 @@ int main() {
 	std::cout << "R" << *tree.root_pointer->right << std::endl;
 	std::cout << "RR" << *tree.root_pointer->right->right << std::endl;
 	std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
-	//std::cout << "RLR" << *tree.root_pointer->right->left->right << std::endl;
+	std::cout << "RLR" << *tree.root_pointer->right->left->right << std::endl;
 	std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
 	std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
 	std::cout << "______LEFT______" << std::endl;
