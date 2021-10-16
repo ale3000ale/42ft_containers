@@ -3,7 +3,7 @@
 # define MAPITERATOR_HPP
 
 #include "iterator"
-#include "my_tree.hpp"
+#include "BaseTree.hpp"
 
 namespace ft
 {
@@ -11,7 +11,7 @@ namespace ft
 											DiffType = Allocator::difference_type */
 	class tree_iterator
 	{
-		typedef tree_node<T>	_node_type; //tree_node to be implemented
+		typedef binary_node<T>	_node_type;
 		_node_type 				*_ptr;
 
 	public:
@@ -75,7 +75,7 @@ namespace ft
 										DiffType = Allocator::difference_type */
 	class tree_const_iterator
 	{
-		typedef tree_node<T>	_node_type; //tree_node to be implemented
+		typedef binary_node<T>	_node_type; //tree_node to be implemented
 		const _node_type 		*_ptr;
 
 	public:

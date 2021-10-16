@@ -1,0 +1,34 @@
+size: 0
+capacity: OK
+max_size: 768614336404564650
+
+Content is:
+###############################################
+push_back():
+
+size: 1
+capacity: OK
+max_size: 768614336404564650
+
+Content is:
+- One long string
+###############################################
+size: 1
+capacity: OK
+max_size: 768614336404564650
+
+Content is:
+- Another long string
+###############################################
+size: 0
+capacity: OK
+max_size: 768614336404564650
+
+Content is:
+###############################################
+size: 0
+capacity: OK
+max_size: 768614336404564650
+
+Content is:
+###############################################

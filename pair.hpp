@@ -96,6 +96,7 @@ namespace ft
 	<	std::__is_swappable<_T1>::value &&
 		std::__is_swappable<_T2>::value,
 		void > ::type
+		
 	swap (pair<_T1, _T2>& __x, pair<_T1, _T2>& __y)
 	{
 		__x.swap(__y);

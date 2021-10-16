@@ -5,12 +5,55 @@
 # include "utils.hpp"
 # include "pair.hpp"
 # include <memory> // for std::allocator
-# include <__tree>
 
 namespace ft
 {
 	# define BLACK true
 	# define RED false
+
+	template <class NodePtr>
+	bool tree_is_left_child(NodePtr x)
+	{
+		return (x == x->parent->left);
+	}
+
+	// Returns:  pointer to the left-most node under x.
+	template <class NodePtr>
+	NodePtr tree_min(NodePtr x)
+	{
+		while (x->left != nullptr)
+			x = x->left;
+		return (x);
+	}
+
+	// Returns:  pointer to the right-most node under x.
+	template <class NodePtr> 
+	NodePtr tree_max(NodePtr x)
+	{
+		while (x->right != nullptr)
+			x = x->right;
+		return (x);
+	}
+
+	template <class NodePtr>
+	NodePtr tree_next_node(NodePtr x)
+	{
+		if (x->right != nullptr)
+			return (tree_min(x->right));
+		while (!tree_is_left_child(x))
+			x = x->parent();
+		return (x->parent());
+	}
+
+	template <class NodePtr>
+	NodePtr tree_prev_node(NodePtr x)
+	{
+		if (x->_left != nullptr)
+			return (tree_max(x->left));
+		while (tree_is_left_child(x))
+			x = x->parent();
+		return (x->parent());
+	}
 
 	//TODO: sostituire il bynary node con il tree_node
 	template <	class _Tp,
@@ -24,12 +67,16 @@ namespace ft
 			typedef _Compare                                 	value_compare;
 			typedef _Allocator                               	allocator_type;
 			typedef typename value_type::first_type				key_type;
-								/*FALSE=black TRUE=red*/
+
 			typedef binary_node<value_type>						__node;
 			typedef binary_node<value_type>*					__node_pointer;
 			typedef __node_pointer								__parent_pointer;
 			typedef __node_pointer								__iter_pointer;
 			typedef std::allocator<__node>						allocator_node;
+			typedef typename allocator_node::difference_type	difference_type;
+
+			typedef tree_iterator<value_type, difference_type>			iterator;
+			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
 
 		public:
 			
@@ -47,15 +94,19 @@ namespace ft
 			{
 			};
 
-			explicit base_tree(const value_compare& __comp): cmp(__comp),root_pointer(nullptr), size(0)
+			//TODO: chek constructur
+			explicit base_tree(const value_compare& __comp): 
+				cmp(__comp),root_pointer(nullptr), end_leaf_pointer(nullptr), size(0)
 			{
 			};
 
-			explicit base_tree(const allocator_type& __a): alloc(__a),root_pointer(nullptr), size(0)
+			explicit base_tree(const allocator_type& __a): 
+				alloc(__a),root_pointer(nullptr), end_leaf_pointer(nullptr), size(0)
 			{
 			};
 
-			base_tree(const value_compare& __comp, const allocator_type& __a): cmp(__comp), alloc(__a), root_pointer(nullptr), size(0)
+			base_tree(const value_compare& __comp, const allocator_type& __a): 
+				cmp(__comp), alloc(__a), root_pointer(nullptr), end_leaf_pointer(nullptr), size(0)
 			{
 			};
 
@@ -71,7 +122,21 @@ namespace ft
 				return (*this);
 			}; */
 
+
 			~base_tree(){};
+
+
+			iterator begin()
+				{ return (iterator(root_pointer)); };
+			const_iterator begin() const
+				{ return (const_iterator(root_pointer)); }
+			iterator end()
+				{ return (iterator(end_leaf_pointer)); };
+			const_iterator end() const
+				{ return (const_iterator(end_leaf_pointer)); }
+
+
+			/*-------------------------------NODE----------------------------*/
 
 			__node_pointer create_node(value_type value)
 			{
@@ -96,6 +161,8 @@ namespace ft
 
 			void destroy_node(__node_pointer &n)
 			{
+				if (n != nullptr && n->value == end_leaf_pointer->value)
+					end_leaf_pointer = n->parent;
 				alloc.destroy(n);
 				alloc.deallocate(n, 1);
 				n = nullptr;
@@ -304,10 +371,12 @@ namespace ft
 				std::cout << "insert case 5\n";
 				n->parent->is_black = BLACK;
 				grandparent(n)->is_black = RED;
-				if (n == n->parent->left && n->parent == grandparent(n)->left) {
+				if (n == n->parent->left && n->parent == grandparent(n)->left) 
+				{
 					rotate_right(n->parent->parent);
-				} else {
-					/* Here, n == n->parent->right && n->parent == grandparent(n)->right */
+				}
+				else 
+				{	
 					rotate_left(n->parent->parent);
 				}
 			}
@@ -322,6 +391,7 @@ namespace ft
 					root_pointer->is_black = true;
 					//std::cout << "root \n"; 
 					node = root_pointer;
+					end_leaf_pointer = root_pointer;
 				}
 				else
 				{
@@ -334,6 +404,8 @@ namespace ft
 				}
 				//balancer
 				insert_case1(node);
+				if (!cmp(node->value, end_leaf_pointer->value))
+					end_leaf_pointer = node;
 				return (node);
 			}
 			

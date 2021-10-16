@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 17:11:39 by amarcell          #+#    #+#             */
-/*   Updated: 2021/10/13 19:07:21 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/16 17:07:38 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,42 @@ namespace ft
 		out <<"[" << node.value <<"]";
 		out << COLOR_OFF;
 		return (out);
+	}
+
+	template <class T>
+	bool operator==(const binary_node<T>& __x, const binary_node<T>& __y)
+	{
+		return __x.value == __y.value;
+	}
+
+	template <class T>
+	bool operator!=(const binary_node<T>& __x, const binary_node<T>& __y)
+	{
+		return !(__x == __y);
+	}
+
+	template <class T>
+	bool operator< (const binary_node<T>& __x, const binary_node<T>& __y)
+	{
+		return __x.value < __y.value;
+	}
+
+	template <class T>
+	bool operator> (const binary_node<T>& __x, const binary_node<T>& __y)
+	{
+		return __y < __x;
+	}
+
+	template <class T>
+	bool operator>=(const binary_node<T>& __x, const binary_node<T>& __y)
+	{
+		return !(__x < __y);
+	}
+
+	template <class T>
+	bool operator<=(const binary_node<T>& __x, const binary_node<T>& __y)
+	{
+		return !(__y < __x);
 	}
 };
 

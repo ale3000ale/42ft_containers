@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Map.hpp                                            :+:      :+:    :+:   */
+/*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexmarcelli <alexmarcelli@student.42.f    +#+  +:+       +#+        */
+/*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/09/29 12:07:09 by alexmarcell      ###   ########.fr       */
+/*   Updated: 2021/10/16 17:09:38 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,7 @@
 # include <exception> // for std::out_of_range
 # include "utils.hpp"
 # include "pair.hpp"
-# include "iterator.hpp"
 # include "MapIterator.hpp"
-
-# include <map>
-
-std::map<int, int> t;
 
 namespace ft
 {
@@ -43,7 +38,7 @@ namespace ft
 		typedef typename allocator_type::size_type       			size_type;
 		typedef typename allocator_type::difference_type			difference_type;
 	private:
-		typedef tree<value_type, key_compare, allocator_type>		_base;
+		typedef base_tree<value_type, key_compare, allocator_type>		_base;
 	public:
 		typedef typename _base::iterator							iterator;
 		typedef typename _base::const_iterator						const_iterator;
