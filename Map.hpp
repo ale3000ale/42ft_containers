@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/16 17:09:38 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/18 17:14:11 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <exception> // for std::out_of_range
 # include "utils.hpp"
 # include "pair.hpp"
-# include "MapIterator.hpp"
+# include "BaseTree.hpp"
 
 namespace ft
 {
@@ -26,24 +26,24 @@ namespace ft
 	class map
 	{
 	public:
-		typedef Key                                      			key_type;
-		typedef T                                        			mapped_type;
-		typedef pair<const key_type, mapped_type>        			value_type;
-		typedef Compare                                  			key_compare;
-		typedef Allocator                                			allocator_type;
-		typedef typename allocator_type::reference       			reference;
-		typedef typename allocator_type::const_reference 			const_reference;
-		typedef typename allocator_type::pointer         			pointer;
-		typedef typename allocator_type::const_pointer   			const_pointer;
-		typedef typename allocator_type::size_type       			size_type;
+		typedef Key													key_type;
+		typedef T													mapped_type;
+		typedef pair<const key_type, mapped_type>					value_type;
+		typedef Compare												key_compare;
+		typedef Allocator											allocator_type;
+		typedef typename allocator_type::reference					reference;
+		typedef typename allocator_type::const_reference			const_reference;
+		typedef typename allocator_type::pointer					pointer;
+		typedef typename allocator_type::const_pointer				const_pointer;
+		typedef typename allocator_type::size_type					size_type;
 		typedef typename allocator_type::difference_type			difference_type;
 	private:
-		typedef base_tree<value_type, key_compare, allocator_type>		_base;
+		typedef base_tree<value_type, key_compare, allocator_type>	_base;
 	public:
 		typedef typename _base::iterator							iterator;
 		typedef typename _base::const_iterator						const_iterator;
-		typedef ft::reverse_iterator<iterator>          			reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>    			const_reverse_iterator;
+		typedef ft::reverse_iterator<iterator>						reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 		class value_compare
 			: public binary_function<value_type, value_type, bool>
@@ -60,28 +60,37 @@ namespace ft
 
 		// construct/copy/destroy:
 		explicit map(const key_compare& comp = key_compare()) : _tree(key_compare(comp)) {};
+
 		map(const key_compare& comp, const allocator_type& a) : _tree(key_compare(comp), allocator_type(a)) {} ;
+		
 		template <class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare())
 				: _tree(key_compare(comp))
 			{ insert(first, last); };
+		
 		template <class InputIterator>
 			map(InputIterator first, InputIterator last, const key_compare& comp, const allocator_type& a)
 				: _tree(key_compare(comp), allocator_type(a))
 			{ insert(first, last); };
+		
 		map(const map& m) : _tree(m._tree)
-			{ insert(m.begin(), m.end()); /* why do i have to insert em if i already copy-created mine? */ };
-		explicit map(const allocator_type& a) : _tree(allocator_type(a)) {};
+		{};
+			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?};*/ 
+		
+		explicit map(const allocator_type& a) : _tree(allocator_type(a))
+		{};
+		
 		map(const map& m, const allocator_type& a) : _tree(m._tree, allocator_type(a))
-			{ insert(m.begin(), m.end()); /* why do i have to insert em if i already copy-created mine? */ };
+		{};
+			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?}; */ 
+		
 		~map();
 
 		map& operator=(const map& m)
 		{
 			if (this != &m)
 			{
-                _tree.clear();
-                insert(m.begin(), m.end());
+            	_tree = m._tree;
             }
             return (*this);
 		};
@@ -107,7 +116,7 @@ namespace ft
 		// capacity:
 		bool      empty()    const { return (_tree.size() == 0); };
 		size_type size()     const { return (_tree.size()); };
-		size_type max_size() const { return (_tree.max_size()); };
+		// TODO: size_type max_size() const { return (_tree.max_size()); };
 
 		// element access:
 		mapped_type& operator[](const key_type& k)

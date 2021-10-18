@@ -2,8 +2,8 @@
 #ifndef MAPITERATOR_HPP
 # define MAPITERATOR_HPP
 
-#include "iterator"
-#include "BaseTree.hpp"
+# include "iterator"
+# include "Node.hpp" 
 
 namespace ft
 {
@@ -15,11 +15,11 @@ namespace ft
 		_node_type 				*_ptr;
 
 	public:
-		typedef bidirectional_iterator_tag	iterator_category;
+		typedef std::bidirectional_iterator_tag	iterator_category;
 		typedef T							value_type;
 		typedef DiffType					difference_type;
 		typedef value_type&					reference;
-		typedef typename _node_type*		pointer;
+		typedef _node_type*					pointer;
 
 		tree_iterator() : _ptr(nullptr) {};
 		/*tree_iterator(tree_iterator<value_type, difference_type> const & other) : _ptr(other._ptr) {};*/
@@ -54,10 +54,7 @@ namespace ft
 			return (tmp);
 		};
 
-		bool operator==(const tree_iterator& x, const tree_iterator& y)
-		{ return (x._ptr == y._ptr); };
-		bool operator!=(const tree_iterator& x, const tree_iterator& y)
-		{ return (!(x == y)); };
+		
 
 		_node_type	*base() const
 			{ return(_ptr); };
@@ -65,11 +62,19 @@ namespace ft
 	private:
 		explicit tree_iterator(pointer p) : _ptr(p) {};
 
-		template <class, class, class> friend class tree;
+		template <class, class, class> friend class base_tree;
 		template <class, class, class> friend class tree_const_iterator;
 		template <class, class, class, class> friend class map;
 		//template <class, class, class> friend class set;
 	};
+
+	template <class T, class DiffType>
+	bool operator==(const tree_iterator<T,DiffType>& x, const tree_iterator<T,DiffType>& y)
+		{ return (x._ptr == y._ptr); };
+
+	template <class T, class DiffType>	
+	bool operator!=(const tree_iterator<T,DiffType>& x, const tree_iterator<T,DiffType>& y)
+		{ return (!(x == y)); };
 
 	template <class T, class DiffType> /* T = type on which the node is templated (tree_node<t>) 
 										DiffType = Allocator::difference_type */
@@ -79,11 +84,11 @@ namespace ft
 		const _node_type 		*_ptr;
 
 	public:
-		typedef bidirectional_iterator_tag		iterator_category;
-		typedef T								value_type;
-		typedef DiffType						difference_type;
-		typedef value_type&						reference;
-		typedef const typename _node_type*		pointer; // dont know if correct to put keyword const there
+		typedef std::bidirectional_iterator_tag		iterator_category;
+		typedef T									value_type;
+		typedef DiffType							difference_type;
+		typedef value_type&							reference;
+		typedef const _node_type*					pointer; // dont know if correct to put keyword const there
 	private:
 		typedef tree_iterator<value_type, difference_type> _non_const_iterator;
 	public:
@@ -103,7 +108,7 @@ namespace ft
 		};
 		tree_const_iterator operator++(int)
 		{
-			tree_iterator tmp(*this);
+			tree_const_iterator tmp(*this);
 			++(*this);
 			return (tmp);
 		};
@@ -115,26 +120,28 @@ namespace ft
 		};
 		tree_const_iterator operator--(int)
 		{
-			tree_iterator tmp(*this);
+			tree_const_iterator tmp(*this);
 			--(*this);
 			return (tmp);
 		};
-
-		bool operator==(const tree_const_iterator& x, const tree_const_iterator& y)
-		{ return (x._ptr == y._ptr); };
-		bool operator!=(const tree_const_iterator& x, const tree_const_iterator& y)
-		{ return (!(x == y)); };
-
 		const _node_type	*base() const
 			{ return(_ptr); };
 
 	private:
-		explicit tree_const__iterator(pointer p) : _ptr(p) {};
+		explicit tree_const_iterator(pointer p) : _ptr(p) {};
 
 		template <class, class, class> friend class tree;
+		template <class, class, class> friend class base_tree;
 		template <class, class, class, class> friend class map;
 		//template <class, class, class> friend class set;
 	};
+	template <class T, class DiffType>
+	bool operator==(const tree_const_iterator<T,DiffType>& x, const tree_const_iterator<T,DiffType>& y)
+		{ return (x._ptr == y._ptr); };
+
+	template <class T, class DiffType>
+	bool operator!=(const tree_const_iterator<T,DiffType>& x, const tree_const_iterator<T,DiffType>& y)
+		{ return (!(x == y)); };
 };
 
 #endif

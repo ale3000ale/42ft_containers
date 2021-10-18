@@ -4,6 +4,7 @@
 # include "Node.hpp"
 # include "utils.hpp"
 # include "pair.hpp"
+# include "MapIterator.hpp"
 # include <memory> // for std::allocator
 
 namespace ft
@@ -62,7 +63,6 @@ namespace ft
 	class base_tree
 	{
 		public:
-			/*------------------*/
 			typedef _Tp                                     	value_type;
 			typedef _Compare                                 	value_compare;
 			typedef _Allocator                               	allocator_type;
@@ -74,6 +74,7 @@ namespace ft
 			typedef __node_pointer								__iter_pointer;
 			typedef std::allocator<__node>						allocator_node;
 			typedef typename allocator_node::difference_type	difference_type;
+			typedef typename allocator_node::size_type       	size_type;
 
 			typedef tree_iterator<value_type, difference_type>			iterator;
 			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
@@ -82,58 +83,83 @@ namespace ft
 			
 			
 			allocator_node				alloc;
-			value_type					value;
 			value_compare				cmp;
 			__node_pointer				root_pointer;
 			__node_pointer				end_leaf_pointer;
-			size_t						size;
+			size_type					_size;
 
 		public:
 
-			base_tree(): size(0)
+			base_tree(): _size(0)
 			{
 			};
 
 			//TODO: chek constructur
 			explicit base_tree(const value_compare& __comp): 
-				cmp(__comp),root_pointer(nullptr), end_leaf_pointer(nullptr), size(0)
+				cmp(__comp),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
 			{
 			};
 
 			explicit base_tree(const allocator_type& __a): 
-				alloc(__a),root_pointer(nullptr), end_leaf_pointer(nullptr), size(0)
+				alloc(__a),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
 			{
 			};
 
 			base_tree(const value_compare& __comp, const allocator_type& __a): 
-				cmp(__comp), alloc(__a), root_pointer(nullptr), end_leaf_pointer(nullptr), size(0)
+				cmp(__comp), alloc(__a), root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
 			{
 			};
 
-			base_tree(const base_tree& __t)
+			base_tree(const base_tree& __t, const allocator_type& __a)
 			{
 				*this = __t;
+				alloc = __a;
 			};
+			
 
-			/* base_tree& operator=(const base_tree& __t)
+			base_tree& operator=(const base_tree& __t)
 			{
 				if (this != &__t)
-					//TODO: copy tree;
+				{
+					clear_all();
+					alloc = __t.alloc;
+					cmp = __t.cmp;
+
+					root_pointer = copy_tree(__t.root_pointer);
+					end_leaf_pointer = find_last(root_pointer);
+				}
 				return (*this);
-			}; */
+			};
+		private:
+			__node_pointer copy_tree(const __node_pointer cp)
+			{
+				__node_pointer n = create_node(cp->value);
+				n->is_black = cp->is_black;
+				if (cp->left != nullptr)
+					n->left = copy_tree(cp->left);
+				if (cp->right != nullptr)
+					n->right = copy_tree(cp->right);
+				return (n);
+				
+			}
 
+		public:
 
-			~base_tree(){};
+			~base_tree() {clear_all();};
+
 
 
 			iterator begin()
 				{ return (iterator(root_pointer)); };
 			const_iterator begin() const
-				{ return (const_iterator(root_pointer)); }
+				{ return (const_iterator(root_pointer)); };
 			iterator end()
 				{ return (iterator(end_leaf_pointer)); };
 			const_iterator end() const
-				{ return (const_iterator(end_leaf_pointer)); }
+				{ return (const_iterator(end_leaf_pointer)); };
+
+			size_type size()
+				{return _size;}
 
 
 			/*-------------------------------NODE----------------------------*/
@@ -141,7 +167,7 @@ namespace ft
 			__node_pointer create_node(value_type value)
 			{
 				__node_pointer node = alloc.allocate(1);
-				size++;
+				_size++;
 				alloc.construct(node);
 				node->value = value;
 				return (node);
@@ -166,7 +192,7 @@ namespace ft
 				alloc.destroy(n);
 				alloc.deallocate(n, 1);
 				n = nullptr;
-				size--;
+				_size--;
 			}
 
 			__node_pointer find_node(value_type const value)
@@ -472,8 +498,8 @@ namespace ft
 				 std::cout << "delete 3\n";
 				if (n->parent->is_black == BLACK &&
 					sibling(n)->is_black == BLACK &&
-					sibling(n)->left->is_black == BLACK &&
-					sibling(n)->right->is_black == BLACK)
+					(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK) &&
+					(sibling(n)->right == nullptr || sibling(n)->right->is_black == BLACK))
 				{
 					sibling(n)->is_black = RED;
 					delete_case1(n->parent);
@@ -486,9 +512,9 @@ namespace ft
 			{
 				std::cout << "delete 4\n";
 				if (n->parent->is_black == RED &&
-					sibling(n)->is_black == BLACK &&
-					sibling(n)->left->is_black == BLACK &&
-					sibling(n)->right->is_black == BLACK)
+					sibling(n)->is_black == BLACK  &&
+					(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK) &&
+					(sibling(n)->right == nullptr || sibling(n)->right->is_black == BLACK))
 				{
 					sibling(n)->is_black = RED;
 					n->parent->is_black = BLACK;
@@ -502,8 +528,8 @@ namespace ft
 				 std::cout << "delete 5\n";
 				if (n == n->parent->left &&
 					sibling(n)->is_black == BLACK &&
-					sibling(n)->left->is_black == RED &&
-					sibling(n)->right->is_black == BLACK)
+					(sibling(n)->left != nullptr && sibling(n)->left->is_black == RED) &&
+					(sibling(n)->right == nullptr || sibling(n)->right->is_black == BLACK))
 				{
 					sibling(n)->is_black = RED;
 					sibling(n)->left->is_black = BLACK;
@@ -511,8 +537,8 @@ namespace ft
 				}
 				else if (n == n->parent->right &&
 						sibling(n)->is_black == BLACK &&
-						sibling(n)->right->is_black == RED &&
-						sibling(n)->left->is_black == BLACK)
+						(sibling(n)->right != nullptr && sibling(n)->right->is_black == RED) &&
+						(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK))
 				{
 					sibling(n)->is_black = RED;
 					sibling(n)->right->is_black = BLACK;
@@ -559,7 +585,7 @@ namespace ft
 				if (n->is_black == BLACK )
 					delete_case1(n);
 				replace_node(n, child);
-				
+				std::cout << "AO CLEAR FATHER" << std::endl;
 				if (n->is_black == BLACK && child != nullptr) 
 				{
 
@@ -572,24 +598,24 @@ namespace ft
 				destroy_node(n);
 			}
 
+			void clear_all(__node_pointer &n)
+			{
+				if (n != nullptr)
+				{
+					std::cout << "AO CLEAR ALL" << std::endl;
+					if (n->right != nullptr)
+						{std::cout << "AO CLEAR ALL RIGHT" << std::endl;
+						clear_all(n->right);}
+					if (n->left != nullptr)
+						{std::cout << "AO CLEAR ALL RIGHT" << std::endl;
+						clear_all(n->left);}
+					delete_node(n); 
+				}
+			}
 
 			void clear_all()
 			{
-				__node_pointer n = root_pointer;
-				if (n->right != nullptr)
-					clear_all(n->right);
-				if (n->left != nullptr)
-					clear_all(n->left);
-				delete_node(n);
-			}
-
-			void clear_all(__node_pointer n)
-			{
-				if (n->right != nullptr)
-					clear_all(n->right);
-				if (n->left != nullptr)
-					clear_all(n->left);
-				delete_node(n);
+				clear_all(root_pointer);
 			}
 	};
 };
