@@ -93,19 +93,19 @@ int main() {
 	tree.delete_node(tree.find_node(p4));*/
 	//TODO: change clear  they must destroy and not delay 
 	//TODO: add delete subtree
-	//tree.clear_all();
+	tree.clear_all();
 	std::cout << "--------------ROOT DELETE--------------" << std::endl;
-	std::cout << *tree.root_pointer << std::endl;
-	std::cout << "L" << *tree.root_pointer->left << std::endl;
-	std::cout << "R" << *tree.root_pointer->right << std::endl;
+	std::cout << tree.root_pointer << std::endl;
+	//std::cout << "L" << *tree.root_pointer->left << std::endl;
+	//std::cout << "R" << *tree.root_pointer->right << std::endl;
 	//std::cout << "RR" << *tree.root_pointer->right->right << std::endl;
-	std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
+	//std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
 	//std::cout << "RLR" << *tree.root_pointer->right->left->right << std::endl;
 	//std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
 	//std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
-	std::cout << "______LEFT______" << std::endl;
-	std::cout << "LR" << *tree.root_pointer->left->right << std::endl;
-	std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
+	//std::cout << "______LEFT______" << std::endl;
+	//std::cout << "LR" << *tree.root_pointer->left->right << std::endl;
+	//std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
 	
 	
 

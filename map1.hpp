@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/18 17:14:11 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/19 15:52:25 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,10 @@ namespace ft
 		const_reverse_iterator rend() const
 			{ return (const_reverse_iterator(begin())); };
 
-		const_iterator         cbegin() const { return (begin()); };
-		const_iterator         cend() const { return (end()); };
-		const_reverse_iterator crbegin() const { return (rbegin()); };
-		const_reverse_iterator crend() const { return (rend()); };
+		const_iterator			cbegin() const { return (begin()); };
+		const_iterator			cend() const { return (end()); };
+		const_reverse_iterator	crbegin() const { return (rbegin()); };
+		const_reverse_iterator	crend() const { return (rend()); };
 
 		// capacity:
 		bool      empty()    const { return (_tree.size() == 0); };

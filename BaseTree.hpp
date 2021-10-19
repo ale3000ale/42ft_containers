@@ -598,21 +598,19 @@ namespace ft
 				destroy_node(n);
 			}
 
+		private:
 			void clear_all(__node_pointer &n)
 			{
 				if (n != nullptr)
 				{
-					std::cout << "AO CLEAR ALL" << std::endl;
 					if (n->right != nullptr)
-						{std::cout << "AO CLEAR ALL RIGHT" << std::endl;
-						clear_all(n->right);}
+						clear_all(n->right);
 					if (n->left != nullptr)
-						{std::cout << "AO CLEAR ALL RIGHT" << std::endl;
-						clear_all(n->left);}
-					delete_node(n); 
+						clear_all(n->left);
+					destroy_node(n); 
 				}
 			}
-
+		public:
 			void clear_all()
 			{
 				clear_all(root_pointer);
