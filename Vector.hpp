@@ -22,22 +22,17 @@ namespace ft
 			typedef VectorIterator<const_pointer>            const_iterator;
 			typedef typename allocator_type::size_type       size_type;
 			typedef typename allocator_type::difference_type difference_type;
-			// sistemare il nome del reverse iterator
 			typedef ft::reverse_iterator<iterator>          	reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>    	const_reverse_iterator;
 
 			vector(const allocator_type& alloc = allocator_type()) : _array(nullptr), _size(0), _capacity(0), _alloc(alloc){}
-			explicit vector(size_type n, const allocator_type& alloc = allocator_type()) : _array(nullptr), _size(0), _capacity(0), _alloc(alloc)
-			{
-				reserve(n);
-			};
-
-			vector(size_type n, const value_type& value, const allocator_type& alloc = allocator_type()) : _array(nullptr), _size(0), _capacity(0), _alloc(alloc)
+			vector(size_type n, const_reference value = value_type(), const allocator_type& alloc = allocator_type()) : _array(nullptr), _size(0), _capacity(0), _alloc(alloc)
 			{
 				assign(n, value);
 			};
 			template <class InputIterator>
-				vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _array(nullptr), _size(0), _capacity(0), _alloc(alloc)
+				vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename enable_if<!is_integral<InputIterator>::value, InputIterator >::type* = 0)
+					: _array(nullptr), _size(0), _capacity(0), _alloc(alloc)
 				{
 					assign(first, last);
 				};
@@ -65,16 +60,16 @@ namespace ft
 
 			/* assign function */
 			template <class InputIterator>
-			void assign(InputIterator first, InputIterator last)
-			{	
-				clear();
-				insert(cbegin(), first, last);				
-			};
-
-			void assign(size_type n, const value_type& u)
+			typename enable_if <!is_integral<InputIterator>::value, void>::type
+				assign(InputIterator first, InputIterator last)
+				{	
+					clear();
+					insert(cbegin(), first, last);				
+				};
+			void assign (size_type n, const_reference u)
 			{
 				clear();
-				insert(begin(), n, u);
+				insert(cbegin(), n, u); // dovrebbe funzionare con begin, bah
 			};
 
 			allocator_type get_allocator() const
@@ -182,13 +177,13 @@ namespace ft
 			};
 			reference       at(size_type n)
 			{
-				if (!(0 <= n < _size))
+				if (!(0 <= n && n < _size))
 					throw (std::out_of_range("index out of range"));
 				return (_array[n]);
 			};
 			const_reference at(size_type n) const
 			{
-				if (!(0 <= n < _size))
+				if (!(0 <= n && n < _size))
 					throw (std::out_of_range("index out of range"));
 				return (_array[n]);
 			};
@@ -229,7 +224,6 @@ namespace ft
 				if (!_size)
 					return ;
 				_alloc.destroy(&_array[--_size]);
-
 			};
 			iterator insert(const_iterator position, const_reference x)
 			{
@@ -263,16 +257,20 @@ namespace ft
 			iterator insert(const_iterator position, size_type n, const_reference x)
 			{
 				for (size_type i = 0; i < n; i++)
-					insert(position, x);
+					position = const_iterator(insert(position, x).base());
 				return (_make_iter(position));
 			};
 			template <class InputIterator>
-				iterator insert(const_iterator position, InputIterator first, InputIterator last)
+				typename enable_if <!is_integral<InputIterator>::value, iterator>::type
+				insert(const_iterator position, InputIterator first, InputIterator last)
 				{
-					InputIterator it = last;
-					while (--it != first)
+					if (first.base() && first != last)
+					{
+						InputIterator it = last;
+						while (--it != first)
+							position = const_iterator(insert(position, *it).base());
 						position = const_iterator(insert(position, *it).base());
-					position = const_iterator(insert(position, *it).base());
+					}
 					return (_make_iter(position));
 				};
 			iterator erase(const_iterator position)
