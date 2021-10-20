@@ -36,7 +36,8 @@ namespace ft
 
 			/*-------------------CONSTRUCTURS-------------------*/
 			VectorIterator() : ptr(nullptr) {}
-			VectorIterator(VectorIterator<iterator_type> const & other) : ptr(other.ptr) {}
+			template <class U>
+				VectorIterator(VectorIterator<U> const & other) : ptr(other.ptr) {}
 			~VectorIterator(){}
 
 			/*-------------------OPERATORS-------------------*/
@@ -113,6 +114,7 @@ namespace ft
 				return (ptr);
 			}
 		template <class T, class Allocator> friend class vector;
+		template <class U> friend class VectorIterator;
 	};
 
 	/*---------LOGIC OPERATOR---------*/
@@ -151,6 +153,23 @@ namespace ft
 	bool operator<=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
 	{
 		return (vc1.base() <= vc2.base());
+	}
+
+	template <class T, class U>
+	typename VectorIterator<T>::difference_type operator-(const VectorIterator<T>& left, const VectorIterator<U>& right) {
+		return (left.base() - right.base());
+	}
+	template <class T, class U>
+	typename VectorIterator<T>::difference_type operator+(const VectorIterator<T>& left, const VectorIterator<U>& right) {
+		return (left.base() + right.base());
+	}
+	template <class T>
+	VectorIterator<T> operator-(typename VectorIterator<T>::difference_type left, const VectorIterator<T>& right) {
+		return (right - left);
+	}
+	template <class T>
+	VectorIterator<T> operator+(typename VectorIterator<T>::difference_type left, const VectorIterator<T>& right) {
+		return (right + left);
 	}
 };
 

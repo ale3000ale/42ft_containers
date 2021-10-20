@@ -64,12 +64,12 @@ namespace ft
 				assign(InputIterator first, InputIterator last)
 				{	
 					clear();
-					insert(cbegin(), first, last);				
+					insert(begin(), first, last);				
 				};
 			void assign (size_type n, const_reference u)
 			{
 				clear();
-				insert(cbegin(), n, u); // dovrebbe funzionare con begin, bah
+				insert(begin(), n, u);
 			};
 
 			allocator_type get_allocator() const
@@ -217,7 +217,7 @@ namespace ft
 
 			void push_back(const_reference x)
 			{
-				insert(cend(), x);
+				insert(end(), x);
 			};
 			void pop_back()
 			{
@@ -225,7 +225,7 @@ namespace ft
 					return ;
 				_alloc.destroy(&_array[--_size]);
 			};
-			iterator insert(const_iterator position, const_reference x)
+			iterator insert(iterator position, const_reference x)
 			{
 				if (!_capacity)
 				{
@@ -248,34 +248,34 @@ namespace ft
 						*it = x;
 					}
 					++_size;
-					return (_make_iter(position));
+					return (position);
 				}
 				difference_type offset = position.base() - cbegin().base();
 				_allocate_copy_assign(_size * 2);
 				return (insert(_array + offset, x));
 			};
-			iterator insert(const_iterator position, size_type n, const_reference x)
+			iterator insert(iterator position, size_type n, const_reference x)
 			{
 				for (size_type i = 0; i < n; i++)
-					position = const_iterator(insert(position, x).base());
-				return (_make_iter(position));
+					position = insert(position, x).base();
+				return (position);
 			};
 			template <class InputIterator>
 				typename enable_if <!is_integral<InputIterator>::value, iterator>::type
-				insert(const_iterator position, InputIterator first, InputIterator last)
+				insert(iterator position, InputIterator first, InputIterator last)
 				{
-					if (first.base() && first != last)
+					if (first != last)
 					{
 						InputIterator it = last;
 						while (--it != first)
-							position = const_iterator(insert(position, *it).base());
-						position = const_iterator(insert(position, *it).base());
+							position = insert(position, *it).base();
+						position = insert(position, *it).base();
 					}
-					return (_make_iter(position));
+					return (position);
 				};
-			iterator erase(const_iterator position)
+			iterator erase(iterator position)
 			{
-				iterator ps = _make_iter(position);
+				iterator ps = position;
 				_alloc.destroy(ps.base());
 				difference_type offset = position.base() - cbegin().base();
 				for( ; static_cast<unsigned long>(offset) < _size - 1; offset++)
@@ -283,16 +283,16 @@ namespace ft
 				--_size;
 				return (ps);
 			};
-			iterator erase(const_iterator first, const_iterator last)
+			iterator erase(iterator first, iterator last)
 			{
-				for (const_iterator it = first; it != last; ++it)
+				for (iterator it = first; it != last; ++it)
 					erase(first);
-				return (_make_iter(first));
+				return (first);
 			};
 
 			void clear()
 			{
-				erase(cbegin(), cend());
+				erase(begin(), end());
 			};
 			void resize(size_type sz, const value_type& c = value_type())
 			{
@@ -304,12 +304,11 @@ namespace ft
 
 			void swap(vector& x)
 			{
-				ft::swap(this->_array, x._array);
-				ft::swap(this->_size, x._size);
-				ft::swap(this->_capacity, x._capacity);
-				std::cout<<"tac\n";
+				swap(this->_array, x._array);
+				swap(this->_size, x._size);
+				swap(this->_capacity, x._capacity);
 			};
-
+		
 		private:
 			pointer			_array;
 			size_type		_size;
@@ -333,11 +332,11 @@ namespace ft
 				_array = _new_array;
 			}
 
-			iterator _make_iter(const_iterator iter)
+			/*iterator _make_iter(const_iterator iter)
 			{
 				difference_type offset = iter.base() - cbegin().base();
     			return (iterator(begin() + offset));
-			}
+			}*/
 	};
 
 	/* non-member funcs */
@@ -366,6 +365,11 @@ namespace ft
 	template <class T> bool operator<=(const vector<T>& x, const vector<T>& y)
 	{
 		return (!(y < x));
+	};
+
+	template <class T> void swap(const vector<T>& x, const vector<T>& y)
+	{
+		x.swap(y);
 	};
 
 	template <class T>
