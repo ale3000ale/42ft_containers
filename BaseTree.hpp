@@ -42,8 +42,8 @@ namespace ft
 		if (x->right != nullptr)
 			return (tree_min(x->right));
 		while (!tree_is_left_child(x))
-			x = x->parent();
-		return (x->parent());
+			x = x->parent;
+		return (x->parent);
 	}
 
 	template <class NodePtr>
@@ -52,8 +52,8 @@ namespace ft
 		if (x->_left != nullptr)
 			return (tree_max(x->left));
 		while (tree_is_left_child(x))
-			x = x->parent();
-		return (x->parent());
+			x = x->parent;
+		return (x->parent);
 	}
 
 	//TODO: sostituire il bynary node con il tree_node
@@ -477,6 +477,8 @@ namespace ft
 					end_leaf_pointer->parent = node;
 				return (iterator(node));
 			}
+
+
 			
 			/*------------------------NODE DELETE------------------------*/
 
@@ -649,20 +651,19 @@ namespace ft
 				erase(n._ptr);
 			}
 
-			/* void erase()
+			void erase(const_iterator first, const_iterator last)
 			{
-				__node_pointer node = *n;
-				__node_pointer parent = node->parent;
-				bool left = (node->parent->left == node) ?
-										true : false;
-				while (node == nullptr)
-					erase(node);
-
-				if (left)
-					parent->left = nullptr;
-				else
-					parent->right = nullptr;
-			} */
+				const_iterator actual = first;
+				const_iterator next = ++first;
+				std::cout << *actual._ptr << "  "<< *next._ptr << "  " << *last._ptr << std::endl;
+				while (actual != last)
+				{
+					erase(actual);
+					actual = next;
+					next = ++next;
+				}
+				erase(actual);
+			}
 
 		private:
 			void destroy_all(__node_pointer &n)

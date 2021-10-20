@@ -137,7 +137,7 @@ namespace ft
 	};
 	template <class T, class DiffType>
 	bool operator==(const tree_const_iterator<T,DiffType>& x, const tree_const_iterator<T,DiffType>& y)
-		{ return (x._ptr == y._ptr); };
+		{ return (x.base() == y.base()); };
 
 	template <class T, class DiffType>
 	bool operator!=(const tree_const_iterator<T,DiffType>& x, const tree_const_iterator<T,DiffType>& y)
