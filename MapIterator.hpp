@@ -19,16 +19,16 @@ namespace ft
 		typedef T							value_type;
 		typedef DiffType					difference_type;
 		typedef value_type&					reference;
-		typedef _node_type*					pointer;
+		typedef value_type*					pointer;
 
 		tree_iterator() : _ptr(nullptr) {};
-		/*tree_iterator(tree_iterator<value_type, difference_type> const & other) : _ptr(other._ptr) {};*/
+		/* tree_iterator(tree_iterator<value_type, difference_type> const & other) : _ptr(other._ptr) {}; */
 		~tree_iterator() {};
 
 		reference operator*() const
-			{ return (_ptr->value()); };
+			{ return (_ptr->_value); };
 		pointer operator->() const
-			{ return (&(_ptr->value())); };
+			{ return (&(_ptr->_value)); };
 
 		tree_iterator& operator++()
 		{
@@ -60,10 +60,10 @@ namespace ft
 			{ return(_ptr); };
 
 	private:
-		explicit tree_iterator(pointer p) : _ptr(p) {};
+		explicit tree_iterator(_node_type *p) : _ptr(p) {};
 
 		template <class, class, class> friend class base_tree;
-		template <class, class, class> friend class tree_const_iterator;
+		template <class, class> friend class tree_const_iterator;
 		template <class, class, class, class> friend class map;
 		//template <class, class, class> friend class set;
 	};
@@ -81,14 +81,14 @@ namespace ft
 	class tree_const_iterator
 	{
 		typedef binary_node<T>	_node_type; //tree_node to be implemented
-		const _node_type 		*_ptr;
+		_node_type 		*_ptr;
 
 	public:
 		typedef std::bidirectional_iterator_tag		iterator_category;
 		typedef T									value_type;
 		typedef DiffType							difference_type;
-		typedef value_type&							reference;
-		typedef const _node_type*					pointer; // dont know if correct to put keyword const there
+		typedef const value_type&							reference;
+		typedef const value_type*					pointer; // dont know if correct to put keyword const there
 	private:
 		typedef tree_iterator<value_type, difference_type> _non_const_iterator;
 	public:
@@ -97,9 +97,9 @@ namespace ft
 		~tree_const_iterator() {};
 
 		reference operator*() const
-			{ return (_ptr->value()); };
+			{ return (_ptr->_value); };
 		pointer operator->() const
-			{ return (&(_ptr->value())); };
+			{ return (&(_ptr->_value)); };
 
 		tree_const_iterator& operator++()
 		{
@@ -128,7 +128,7 @@ namespace ft
 			{ return(_ptr); };
 
 	private:
-		explicit tree_const_iterator(pointer p) : _ptr(p) {};
+		explicit tree_const_iterator(_node_type *p) : _ptr(p) {};
 
 		template <class, class, class> friend class tree;
 		template <class, class, class> friend class base_tree;

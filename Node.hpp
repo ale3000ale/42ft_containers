@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/04 17:11:39 by amarcell          #+#    #+#             */
-/*   Updated: 2021/10/16 17:07:38 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/20 17:29:47 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ namespace ft
 			typedef class binary_node<_Tp>*			__node_type_pointer;
 			typedef _Tp								__value_type;
 
-			__value_type						value;
+			__value_type						_value;
 			__node_type_pointer					left;
 			__node_type_pointer					right;
 			__node_type_pointer         		parent;
@@ -46,11 +46,11 @@ namespace ft
 
 		public:
 			binary_node(): 
-				value(), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
+				_value(), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
 			{}
 
 			binary_node(__value_type _content) : 
-				value(_content), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
+				_value(_content), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
 			{}
 
 			binary_node(__node_type_pointer _parent): parent(_parent), is_black(false)
@@ -58,36 +58,41 @@ namespace ft
 			}
 
 			binary_node(__value_type _content, __node_type &_parent) : 
-				value(_content), parent(&_parent), is_black(false)
+				_value(_content), parent(&_parent), is_black(false)
 			{}
 
 			binary_node(__value_type _content, __node_type &_parent, __node_type &_left, __node_type &_right) : 
-				value(_content), left(&_left), right(&_right), parent(&_parent), is_black(false)
+				_value(_content), left(&_left), right(&_right), parent(&_parent), is_black(false)
 			{}
 
 			binary_node(__value_type _content, __node_type &_left, __node_type &_right) : 
-				value(_content),  left(&_left), right(&_right), is_black(false)
+				_value(_content),  left(&_left), right(&_right), is_black(false)
 			{}
 			
 
 			binary_node(__node_type const &node)
 			{
 				*this = node;
-			}
-			
-			binary_node& operator=(binary_node const& nd)
+			}			
+
+			binary_node& operator=(binary_node const& nd) const
 			{
 				if (this != &nd)
 				{
 					left = nd.left;
 					right = nd.right;
 					parent = nd.parent;
-					value = nd.value;
+					_value = nd._value;
 					is_black = nd.is_black;
 				}
 				return *this;
 			}
 			~binary_node(){};
+
+			__value_type value()
+			{
+				return (_value);
+			}
 	};
 
 	template <class T>
@@ -102,7 +107,7 @@ namespace ft
 		out << ")(";
 		out << node.left <<"|" << node.right;
 		out << ")";
-		out <<"[" << node.value <<"]";
+		out <<"[" << node._value <<"]";
 		out << COLOR_OFF;
 		return (out);
 	}
@@ -110,7 +115,7 @@ namespace ft
 	template <class T>
 	bool operator==(const binary_node<T>& __x, const binary_node<T>& __y)
 	{
-		return __x.value == __y.value;
+		return __x._value == __y._value;
 	}
 
 	template <class T>
@@ -122,7 +127,7 @@ namespace ft
 	template <class T>
 	bool operator< (const binary_node<T>& __x, const binary_node<T>& __y)
 	{
-		return __x.value < __y.value;
+		return __x._value < __y._value;
 	}
 
 	template <class T>
