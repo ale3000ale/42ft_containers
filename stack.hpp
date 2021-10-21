@@ -74,6 +74,11 @@ namespace ft
 		{
 			ft::swap(c, q.c);
 		}
+		template <class T1, class C1>
+		friend bool operator==(const stack<T1, C1>& x, const stack<T1, C1>& y);
+
+		template <class T1, class C1>
+		friend bool operator< (const stack<T1, C1>& x, const stack<T1, C1>& y);
 	};
 
 	/*-------------------OPERATORS-------------------*/

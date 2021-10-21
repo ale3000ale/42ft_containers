@@ -97,7 +97,7 @@ namespace ft
 			};
 			reverse_iterator       rbegin()
 			{
-				return (reverse_iterator(--end()));
+				return (reverse_iterator(end()));
 			};
 			const_reverse_iterator rbegin()		const
 			{
@@ -141,7 +141,7 @@ namespace ft
 			{
 				return (_capacity);
 			};
-			bool empty()
+			bool empty() const
 			{
 				return (_size == 0);
 			};
@@ -155,7 +155,7 @@ namespace ft
 			{
 				if (!(_capacity > _size))
 					return ;
-				// creare un nuovo vettore, copiarlo e liberare quello vecchio
+				// create a new vector, copy every element inside it and delete the old one
 				if (!_size && _array)
 				{
 					_alloc.deallocate(_array, _capacity);
@@ -304,9 +304,9 @@ namespace ft
 
 			void swap(vector& x)
 			{
-				swap(this->_array, x._array);
-				swap(this->_size, x._size);
-				swap(this->_capacity, x._capacity);
+				std::swap(this->_array, x._array);
+				std::swap(this->_size, x._size);
+				std::swap(this->_capacity, x._capacity);
 			};
 		
 		private:
@@ -331,12 +331,6 @@ namespace ft
 				_capacity = size;
 				_array = _new_array;
 			}
-
-			/*iterator _make_iter(const_iterator iter)
-			{
-				difference_type offset = iter.base() - cbegin().base();
-    			return (iterator(begin() + offset));
-			}*/
 	};
 
 	/* non-member funcs */
@@ -381,7 +375,6 @@ namespace ft
 		out << "]";
 		return (out);
 	}
-
 };
 
 #endif

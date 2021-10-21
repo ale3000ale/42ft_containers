@@ -1,7 +1,7 @@
 
 
-#ifndef ITERATOR_H__
-#define ITERATOR_H__
+#ifndef ITERATOR_H
+#define ITERATOR_H
 
 #include <iterator> // For std::forward_iterator_tag
 #include <cstddef>  // For std::ptrdiff_t
@@ -83,12 +83,12 @@ namespace ft
 		/*---------ACCESS OPERATOR---------*/
 		reference operator*() const 
 		{
-			return (*it);
+			return (*(it - 1));
 		}
 
 		pointer  operator->() const 
 		{
-			return (it);
+			return (&operator*());
 		}
 
 		reference			operator[](difference_type n) const 
@@ -153,40 +153,52 @@ namespace ft
 	};
 
 	/*---------LOGIC OPERATOR---------*/
-	template <class _Iter1, class _Iter2>
-	bool operator==(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator==(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
 	{
-		return (vc1.base() == vc2.base());
+		return (x.base() == y.base());
 	}
 
-	template <class _Iter1, class _Iter2>
-	bool operator<(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator<(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
 	{
-		return (vc1.base() < vc2.base());
+		return (x.base() > y.base());
 	}
 
-	template <class _Iter1, class _Iter2>
-	bool operator!=(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator!=(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
 	{
-		return !(vc1.base() == vc2.base());
+		return (x.base() != y.base());
 	}
-				
-	template <class _Iter1, class _Iter2>
-	bool operator>(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+
+	template <class Iter1, class Iter2>
+	bool operator>(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
 	{
-		return (vc1.base() > vc2.base());
+		return (x.base() < y.base());
 	}
-				
-	template <class _Iter1, class _Iter2>
-	bool operator>=(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+
+	template <class Iter1, class Iter2>
+	bool operator>=(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
 	{
-		return (vc1.base() >= vc2.base());
+		return (x.base() <= y.base());
 	}
-					
-	template <class _Iter1, class _Iter2>
-	bool operator<=(const reverse_iterator<_Iter1>& vc1, const reverse_iterator<_Iter2>& vc2)
+
+	template <class Iter1, class Iter2>
+	bool operator<=(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
 	{
-		return (vc1.base() <= vc2.base());
+		return (x.base() >= y.base());
+	}
+
+	template <class Iter1, class Iter2>
+	typename reverse_iterator<Iter1>::difference_type operator-(const reverse_iterator<Iter1>& x, const reverse_iterator<Iter2>& y)
+	{
+		return (y.base() - x.base());
+	}
+
+	template <class Iter>
+	reverse_iterator<Iter> operator+(typename reverse_iterator<Iter>::difference_type n, const reverse_iterator<Iter>& x)
+	{
+		return (reverse_iterator<Iter>(x.base() - n));
 	}
 };
 

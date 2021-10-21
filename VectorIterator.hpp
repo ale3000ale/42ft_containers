@@ -20,14 +20,14 @@ namespace ft
 	template <class T, class Allocator>
 	class vector;
 
-	template <class _Iter> // _Iter = T*
+	template <class Iter> // _Iter = T*
 	class VectorIterator
 	{
 		private:
-			_Iter	ptr;
+			Iter	ptr;
 
 		public:
-			typedef _Iter														iterator_type;
+			typedef Iter														iterator_type;
 			typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
 			typedef typename iterator_traits<iterator_type>::value_type			value_type;
 			typedef typename iterator_traits<iterator_type>::difference_type	difference_type;
@@ -119,56 +119,56 @@ namespace ft
 
 	/*---------LOGIC OPERATOR---------*/
 	//prototype because they nedd only 2 parameters
-	template <class _Iter1, class _Iter2>
-	bool operator==(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator==(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{
 		return (vc1.base() == vc2.base());
 	}
 
-	template <class _Iter1, class _Iter2>
-	bool operator<(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator<(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{
 		return (vc1.base() < vc2.base());
 	}
 
-	template <class _Iter1, class _Iter2>
-	bool operator!=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator!=(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{
 		return !(vc1.base() == vc2.base());
 	}
 				
-	template <class _Iter1, class _Iter2>
-	bool operator>(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator>(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{
 		return (vc1.base() > vc2.base());
 	}
 				
-	template <class _Iter1, class _Iter2>
-	bool operator>=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator>=(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{
 		return (vc1.base() >= vc2.base());
 	}
 					
-	template <class _Iter1, class _Iter2>
-	bool operator<=(const VectorIterator<_Iter1>& vc1, const VectorIterator<_Iter2>& vc2)
+	template <class Iter1, class Iter2>
+	bool operator<=(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{
 		return (vc1.base() <= vc2.base());
 	}
 
-	template <class T, class U>
-	typename VectorIterator<T>::difference_type operator-(const VectorIterator<T>& left, const VectorIterator<U>& right) {
+	template <class Iter1, class Iter2>
+	typename VectorIterator<Iter1>::difference_type operator-(const VectorIterator<Iter1>& left, const VectorIterator<Iter2>& right) {
 		return (left.base() - right.base());
 	}
-	template <class T, class U>
-	typename VectorIterator<T>::difference_type operator+(const VectorIterator<T>& left, const VectorIterator<U>& right) {
+	template <class Iter1, class Iter2>
+	typename VectorIterator<Iter1>::difference_type operator+(const VectorIterator<Iter1>& left, const VectorIterator<Iter2>& right) {
 		return (left.base() + right.base());
 	}
-	template <class T>
-	VectorIterator<T> operator-(typename VectorIterator<T>::difference_type left, const VectorIterator<T>& right) {
+	template <class Iter>
+	VectorIterator<Iter> operator-(typename VectorIterator<Iter>::difference_type left, const VectorIterator<Iter>& right) {
 		return (right - left);
 	}
-	template <class T>
-	VectorIterator<T> operator+(typename VectorIterator<T>::difference_type left, const VectorIterator<T>& right) {
+	template <class Iter>
+	VectorIterator<Iter> operator+(typename VectorIterator<Iter>::difference_type left, const VectorIterator<Iter>& right) {
 		return (right + left);
 	}
 };
