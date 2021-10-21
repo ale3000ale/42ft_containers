@@ -11,9 +11,9 @@ Write your code in this editor and press "Run" button to compile and execute it.
 #include "iterator.hpp"
 #include "Vector.hpp"
 #include "Stack.hpp" */
-#include <map>
-# include "BaseTree.hpp"
+# include "map.hpp"
 # include "pair.hpp"
+# include <map>
 
 
 
@@ -41,6 +41,18 @@ struct max
 int main() {
 	
 	typedef ft::pair<std::string, int> _p;
+	ft::map<std::string, int>	mp;
+
+	 mp["ciao"] = 3;
+	mp["paco"] = 6;
+	mp["ale"] = 16;
+	mp["taco"] = 66;
+	mp["uli"] = 166;
+	mp["va"] = 166;
+	mp["za"] = 166;
+	mp["baci"] = 166;
+	mp["bz"] = 166;
+
 	_p p1("ciao", 3);
 	_p p2("paco", 6);
 	_p p3("ale", 16);
@@ -51,7 +63,7 @@ int main() {
 	_p p8("baci", 166);
 	_p p9("bz", 166);
 
-	ft::base_tree<_p> tree;
+	ft::base_tree<_p, ft::less<_p::first_type> > tree;
 	std::cout << "--------------TREE--------------" << std::endl;
 	std::cout << "--------------p1--------------" << std::endl;
 	std::cout << *tree.insert(p1) << std::endl;
@@ -72,7 +84,7 @@ int main() {
 	std::cout << "--------------p9--------------" << std::endl;
 	std::cout << *tree.insert(p9) << std::endl;
 	//tree.root_pointer = tree.create_node(p1);
-	std::cout << "--------------ROOT--------------" << std::endl;
+	std::cout << "--------------ROOT TREE--------------" << std::endl;
 	std::cout << *tree.root_pointer << std::endl;
 	std::cout << "L" << *tree.root_pointer->left << std::endl;
 	std::cout << "R" << *tree.root_pointer->right << std::endl;
@@ -85,8 +97,21 @@ int main() {
 	std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
 
 
+	std::cout << "--------------ROOT MAP--------------" << std::endl;
+	std::cout << *mp[tree.root_pointer->_value.first] << std::endl;
+	std::cout << "L" << *mp.find(tree.root_pointer->left->_value.first).base() << std::endl;
+	std::cout << "R" << *mp[tree.root_pointer->right->_value.first] << std::endl;
+	std::cout << "RR" << *mp[tree.root_pointer->right->right->_value.first] << std::endl;
+	std::cout << "RL" << *mp[tree.root_pointer->right->left->_value.first] << std::endl;
+	std::cout << "RRR" << *mp[tree.root_pointer->right->right->right->_value.first] << std::endl;
+	std::cout << "RRL" << *mp[tree.root_pointer->right->right->left->_value.first] << std::endl;
+	std::cout << "______LEFT______" << std::endl;
+	std::cout << "LR" << *mp[tree.root_pointer->left->right->_value.first] << std::endl;
+	std::cout << "LL" << *mp[tree.root_pointer->left->left->_value.first] << std::endl;
+
+
 	std::cout << "--------------DELETE--------------" << std::endl;
-	tree.erase(tree.find("taco"));
+	tree.erase(tree.find("baci"), tree.find("bz"));
 	/* tree.erase(tree.find_node(p5));
 	tree.erase(tree.find_node(p6));
 	tree.erase(tree.find_node(p2));
@@ -101,11 +126,11 @@ int main() {
 	std::cout << "RR" << *tree.root_pointer->right->right << std::endl;
 	std::cout << "RL" << *tree.root_pointer->right->left << std::endl;
 	std::cout << "RLR" << *tree.root_pointer->right->left->right << std::endl;
-	//std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
-	//std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
+	std::cout << "RRR" << *tree.root_pointer->right->right->right << std::endl;
+	std::cout << "RRL" << *tree.root_pointer->right->right->left << std::endl;
 	//std::cout << "______LEFT______" << std::endl;
-	//std::cout << "LR" << *tree.root_pointer->left->right << std::endl;
-	//std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
+	std::cout << "LR" << *tree.root_pointer->left->right << std::endl;
+	std::cout << "LL" << *tree.root_pointer->left->left << std::endl;
 	
 	
 

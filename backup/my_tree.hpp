@@ -184,6 +184,7 @@ namespace ft
 
 			const size_type& size() const
 				{ return (_size); };
+
 			size_type max_size() const
 				{ return (_node_allocator().max_size()) };
 
@@ -298,7 +299,7 @@ namespace ft
 				return iterator(result);
 			}
 			const_iterator lower_bound(const key_type& k) const
-				{ return (lower_bound(k)); };
+				{ return (const_iterator(lower_bound(k))); };
 
 			iterator upper_bound(const key_type& k, node_pointer root = _root)
 			{
@@ -316,7 +317,7 @@ namespace ft
 				return iterator(result);
 			}
 			const_iterator upper_bound(const key_type& k) const
-				{ return (upper_bound(k)); };
+				{ return (const_iterator(upper_bound(k))); };
 			
 			pair<iterator,iterator> equal_range(const key_type& k)
 			{ return (pair<iterator,iterator>(lower_bound(k), upper_bound(k))); };

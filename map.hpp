@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/20 16:27:35 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/21 18:29:04 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ namespace ft
 		typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 
 		class value_compare
-			: public binary_function<value_type, value_type, bool>
+			: public std::binary_function<value_type, value_type, bool>
 		{
 			friend class map;
 			protected:
@@ -84,7 +84,9 @@ namespace ft
 		{};
 			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?}; */ 
 		
-		~map();
+		~map()
+		{
+		}
 
 		map& operator=(const map& m)
 		{
@@ -122,7 +124,7 @@ namespace ft
 		mapped_type& operator[](const key_type& k)
 		{
 			iterator node = find(k);
-			if (node == cend())
+			if (node == end())
 			{
 				value_type v = value_type(k, mapped_type()); // dont know if it is correct
 				node = _tree.insert(v);
@@ -130,17 +132,17 @@ namespace ft
 			return ((*node).second);
 		};
 
-		mapped_type& at(const key_type& k);
+		mapped_type& at(const key_type& k)
 		{
 			iterator node = find(k);
-			if (node == cend())
+			if (node == end())
 				throw(std::out_of_range("map::at:  key not found"));
 			return ((*node).second);
 		}
 		const mapped_type& at(const key_type& k) const
 		{
 			iterator node = find(k);
-			if (node == cend())
+			if (node == end())
 				throw(std::out_of_range("map::at:  key not found"));
 			return ((*node).second);
 		};
@@ -170,7 +172,7 @@ namespace ft
 		allocator_type get_allocator() const
 			{ return (allocator_type(_tree._node_allocator())); }; // needs check
 		key_compare    key_comp()      const
-			{ return (key_compare(_tree._value_compare()))};
+			{ return (key_compare(_tree._value_compare()));};
 		value_compare  value_comp()    const
 			{ return (value_compare(key_comp())); };
 
@@ -183,7 +185,7 @@ namespace ft
 		size_type      count(const key_type& k) const
 			{ return (_tree.count(k)); };
 
-		iterator		lower_bound(const key_type& k);
+		iterator		lower_bound(const key_type& k)
 			{ return (_tree.lower_bound(k)); };
 		const_iterator	lower_bound(const key_type& k) const
 			{ return (_tree.lower_bound(k)); };

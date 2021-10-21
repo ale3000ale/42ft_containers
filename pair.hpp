@@ -20,6 +20,7 @@ namespace ft
 		/*-------------------CONSTRUCTURS-------------------*/
 		pair() : first(), second() {}		
 		pair(T1 const& _t1, T2 const& _t2) : first(_t1), second(_t2) {}
+		pair(T1 const& _t1) : first(_t1), second() {}
 
 		template <class _U1, class _U2>
 		pair(const pair<_U1, _U2>& _p) : first(_p.first), second(_p.second) {}
