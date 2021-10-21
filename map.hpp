@@ -73,27 +73,17 @@ namespace ft
 				: _tree(key_compare(comp), allocator_type(a))
 			{ insert(first, last); };
 		
-		map(const map& m) : _tree(m._tree)
-		{};
+		map(const map& m, , const allocator_type& a = allocator_type()) : _tree(m._tree, allocator_type(a)) {};
 			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?};*/ 
 		
-		explicit map(const allocator_type& a) : _tree(allocator_type(a))
-		{};
+		explicit map(const allocator_type& a) : _tree(allocator_type(a)) {};
 		
-		map(const map& m, const allocator_type& a) : _tree(m._tree, allocator_type(a))
-		{};
-			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?}; */ 
-		
-		~map()
-		{
-		}
+		~map() {};
 
 		map& operator=(const map& m)
 		{
 			if (this != &m)
-			{
             	_tree = m._tree;
-            }
             return (*this);
 		};
 
@@ -118,7 +108,7 @@ namespace ft
 		// capacity:
 		bool      empty()    const { return (_tree.size() == 0); };
 		size_type size()     const { return (_tree.size()); };
-		// TODO: size_type max_size() const { return (_tree.max_size()); };
+		size_type max_size() const { return (_tree.max_size()); };
 
 		// element access:
 		mapped_type& operator[](const key_type& k)

@@ -331,7 +331,7 @@ namespace ft
 				_capacity = size;
 				_array = _new_array;
 			}
-	};
+	}; // class vector
 
 	/* non-member funcs */
 	template <class T> bool operator==(const vector<T>& x, const vector<T>& y)
@@ -375,6 +375,6 @@ namespace ft
 		out << "]";
 		return (out);
 	}
-};
+}; // namespace ft
 
 #endif
