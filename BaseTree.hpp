@@ -50,7 +50,7 @@ namespace ft
 	template <class NodePtr>
 	NodePtr tree_prev_node(NodePtr x)
 	{
-		if (x->_left != nullptr)
+		if (x->left != nullptr)
 			return (tree_max(x->left));
 		while (tree_is_left_child(x))
 			x = x->parent;
@@ -80,7 +80,7 @@ namespace ft
 			typedef tree_iterator<value_type, difference_type>			iterator;
 			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
 
-		private:
+		public:
 			
 			
 			allocator_node				alloc;
@@ -96,26 +96,27 @@ namespace ft
 			{
 			};
 
-			//TODO: chek constructur
 			explicit base_tree(const value_compare& __comp): 
 				cmp(__comp),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
 			{
 			};
 
 			explicit base_tree(const allocator_type& __a): 
-				alloc(__a),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
+				alloc_type(__a),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
 			{
 			};
 
 			base_tree(const value_compare& __comp, const allocator_type& __a): 
-				cmp(__comp), alloc(__a), root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
+				cmp(__comp), alloc_type(__a), root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
 			{
 			};
+			
 
-			base_tree(const base_tree& __t, const allocator_type& __a)
+			base_tree(const base_tree& __t, const allocator_type& __a = allocator_type())
 			{
+				alloc_type = __a;
 				*this = __t;
-				alloc = __a;
+				
 			};
 			
 
@@ -127,8 +128,9 @@ namespace ft
 					alloc = __t.alloc;
 					cmp = __t.cmp;
 
-					root_pointer = copy_tree(__t.root_pointer);
-					end_leaf_pointer = create_node(find_last(root_pointer));
+					root_pointer = copy_tree(__t.end_leaf_pointer, __t.root_pointer);
+					//end_leaf_pointer = create_node(find_last(root_pointer));
+					_size =__t.size();
 				}
 				return (*this);
 			};
@@ -144,14 +146,24 @@ namespace ft
 			};
 
 		private:
-			__node_pointer copy_tree(const __node_pointer cp)
+			__node_pointer copy_tree(const __node_pointer end, const __node_pointer cp, __node_pointer parent = nullptr)
 			{
-				__node_pointer n = create_node(cp->_value);
+				__node_pointer n;
+				if (cp != end)
+					n = (parent) ?
+						create_node(cp->_value, parent)
+					:
+						create_node(cp->_value);
+				else
+					n = create_node(parent);
+
 				n->is_black = cp->is_black;
 				if (cp->left != nullptr)
-					n->left = copy_tree(cp->left);
+					n->left = copy_tree(end, cp->left, n);
 				if (cp->right != nullptr)
-					n->right = copy_tree(cp->right);
+					n->right = copy_tree(end, cp->right, n);
+				if (cp == end)
+					end_leaf_pointer = n;
 				return (n);
 			}
 
@@ -179,10 +191,6 @@ namespace ft
 
 			size_type max_size() const
 			{
-				//return (std::numeric_limits<difference_type>::max() / 20);
-				//return std::max<size_type>(alloc.max_size() / sizeof(__node), std::numeric_limits<difference_type >::max());
-				//std::allocator<std::pair<_Tp, _Tp> > a;
-				//return (a.max_size());
 				return (alloc_type.max_size());
 			};
 
@@ -190,7 +198,7 @@ namespace ft
 				{ return (alloc); };
 			allocator_type & _value_allocator() const
 				{ return (alloc_type); };
-			value_compare & _value_compare() const
+			const value_compare & _value_compare() const
 				{ return (cmp); };
 
 
@@ -204,7 +212,7 @@ namespace ft
 				return (node);
 			}
 
-			__node_pointer create_node( __node_pointer &parent)
+			__node_pointer create_node( __node_pointer parent)
 			{
 				__node_pointer node = alloc.allocate(1);
 				alloc.construct(node);
@@ -226,12 +234,16 @@ namespace ft
 
 			void destroy_node(__node_pointer &n)
 			{
-				if (n != nullptr && n == end_leaf_pointer->parent)
+				if (!n)
+					return ;
+				if (/*n != nullptr && */n == end_leaf_pointer->parent)
 					end_leaf_pointer->parent = n->parent;
+				if (n != end_leaf_pointer)
+					_size--;
 				alloc.destroy(n);
 				alloc.deallocate(n, 1);
 				n = nullptr;
-				_size--;
+				
 			}
 
 			iterator find(const key_type key)		const
@@ -318,8 +330,8 @@ namespace ft
 
 			__node_pointer find_first(__node_pointer n) const
 			{
-				////std::cout << "first " << std::endl;
-				if (n->left == nullptr)
+				
+				if (n == nullptr || n->left == nullptr )
 					return n;
 				__node_pointer tmp = n->left;
 				while (tmp->left != nullptr)
@@ -751,7 +763,7 @@ namespace ft
 			}
 		public:
 
-			void erase(__node_pointer n)
+			iterator erase(__node_pointer n)
 			{
 				if (root_pointer != nullptr && n == end_leaf_pointer->parent)
 					end_leaf_pointer->parent = n->parent;
@@ -762,8 +774,8 @@ namespace ft
 					//std::cout << "delete double child" << *n << std::endl;
 					tmp = find_last(n->left);
 					std::swap<value_type>(tmp->_value, n->_value);
-					erase(tmp);
-					return;
+					return erase(tmp);
+					
 				}
 
 				/* Si assume che n ha al massimo un figlio non nullo */
@@ -782,26 +794,41 @@ namespace ft
 					else
 						delete_case1(child);
 				}
+				tmp = tree_next_node(n);
 				destroy_node(n);
+				return (iterator(tmp));
 			}
 
-			void erase(const_iterator n)
+			iterator erase(const_iterator n)
 			{
-				erase(n._ptr);
+				return erase(n._ptr);
 			}
 
-			void erase(const_iterator first, const_iterator last)
+			iterator erase(const_iterator first, const_iterator last)
 			{
-				const_iterator actual = first;
-				const_iterator next = ++first;
+				iterator ret(first._ptr);
+
+				while (ret != last)
+				{
+					std::cout << *first._ptr << " == "<< *last._ptr << std::endl;
+					ret = erase(ret._ptr);
+					std::cout << *first._ptr << " == "<< *last._ptr << std::endl;
+				}
+				
+				return (ret);
+
+					// ----------PRIMA--------
+
+				/* const_iterator actual = first;
+				const_iterator next = ++first; */ 
 				//std::cout << *actual._ptr << "  "<< *next._ptr << "  " << *last._ptr << std::endl;
-				while (actual != last)
+				/* while (actual != last)
 				{
 					erase(actual);
 					actual = next;
 					next = ++next;
-				}
-				erase(actual);
+				} */
+				//return erase(actual);
 			}
 
 		private:
@@ -820,6 +847,7 @@ namespace ft
 			void clear_all()
 			{
 				destroy_all(root_pointer);
+				end_leaf_pointer = nullptr;
 			}
 
 	};

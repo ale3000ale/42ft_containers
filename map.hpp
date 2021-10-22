@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/22 19:58:52 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/22 22:52:59 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@
 namespace ft
 {
 	template <class Key, class T, class Compare = less<Key>,
-		class Allocator = std::allocator< pair <const Key, T> > >
+		class Allocator = std::allocator< pair <Key, T> > >
 	class map
 	{
 	public:
 		typedef Key													key_type;
 		typedef T													mapped_type;
-		typedef pair<const key_type, mapped_type>					value_type;
+		typedef pair<key_type, mapped_type>					value_type;
 		typedef Compare												key_compare;
 		typedef Allocator											allocator_type;
 		typedef typename allocator_type::reference					reference;
@@ -39,6 +39,7 @@ namespace ft
 		typedef typename allocator_type::difference_type			difference_type;
 	private:
 		typedef base_tree<value_type, key_compare, allocator_type>	_base;
+		typedef typename std::allocator<_base> 						_tree_allocator;
 	public:
 		typedef typename _base::iterator							iterator;
 		typedef typename _base::const_iterator						const_iterator;
@@ -108,7 +109,7 @@ namespace ft
 		// capacity:
 		bool      empty()    const { return (_tree.size() == 0); };
 		size_type size()     const { return (_tree.size()); };
-		size_type max_size() const { return _tree.max_size(); };
+		size_type max_size() const { return (_tree_allocator().max_size()); };
 
 		// element access:
 		mapped_type& operator[](const key_type& k)
@@ -157,7 +158,7 @@ namespace ft
 		iterator  erase(const_iterator first, const_iterator last)
 			{ return (_tree.erase(first, last)); };
 		void clear()
-			{ _tree.clear(); };
+			{ _tree.clear_all(); };
 
 		// observers:
 		allocator_type get_allocator() const
@@ -195,6 +196,7 @@ namespace ft
 			{ _tree.swap(m._tree); };
 
 	private:
+					
 		_base	_tree;
 	}; // class map
 

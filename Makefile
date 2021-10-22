@@ -6,7 +6,7 @@
 #    By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/13 15:26:08 by amarcell          #+#    #+#              #
-#    Updated: 2021/10/21 16:54:51 by amarcell         ###   ########.fr        #
+#    Updated: 2021/10/22 21:07:50 by amarcell         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -121,20 +121,24 @@ leaks:
 			@ echo $(LEAKS_COLOR) "[... Finding leaks in $(NAME) ⛳️ ...]" 
 			@ leaks --atExit -- ./$(NAME)
 
-git-me:		
-			echo					\
-			'						\
-			git status && 			\
-			echo "do u want add? (y/n)"  && \
-			read MSG && \
-			if  $$MSG == "y";		\
-			then echo "GAY";		\
-			else exit;				\
-			fi; 					\
-			'\
-			 > delete_me.sh ; chmod 755 delete_me.sh && \
-			./delete_me.sh
+TEST =  @ cd containers_test &&  ./do.sh
+test_all:	
+			$(TEST)
+			
+test_map:		
+			$(TEST) map
+
+test_vector:		
+			$(TEST) vector
+
+test_set:		
+			$(TEST) set
+
+test_stack:		
+			$(TEST) stack
+			
 			
 			
 
 .PHONY: 	all clean fclean re norme  debug re-debug leaks
+			test_all test_map test_vector test_set test_stack
