@@ -161,7 +161,7 @@ namespace ft
 
 		// observers:
 		allocator_type get_allocator() const
-			{ return (allocator_type(_tree._node_allocator())); }; // needs check
+			{ return (allocator_type(_tree._node_allocator())); };
 		key_compare    key_comp()      const
 			{ return (key_compare(_tree._value_compare()));};
 		value_compare  value_comp()    const
@@ -196,7 +196,7 @@ namespace ft
 
 	private:
 		_base	_tree;
-	};
+	}; // class map
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator==(const map<Key, T, Compare, Allocator>& x,
@@ -213,29 +213,29 @@ namespace ft
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator!=(const map<Key, T, Compare, Allocator>& x,
 			        const map<Key, T, Compare, Allocator>& y)
-	{ return (!(x == y)); };
+		{ return (!(x == y)); };
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator> (const map<Key, T, Compare, Allocator>& x,
 			        const map<Key, T, Compare, Allocator>& y)
-	{ return (y < x); };
+		{ return (y < x); };
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator>=(const map<Key, T, Compare, Allocator>& x,
 			        const map<Key, T, Compare, Allocator>& y)
-	{  return (!(x < y)); };
+		{  return (!(x < y)); };
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator<=(const map<Key, T, Compare, Allocator>& x,
 			        const map<Key, T, Compare, Allocator>& y)
-	{ return (!(y < x)); };
+		{ return (!(y < x)); };
 
 	// specialized algorithms:
 	template <class Key, class T, class Compare, class Allocator>
 	void
 	swap(map<Key, T, Compare, Allocator>& x, map<Key, T, Compare, Allocator>& y)
-	{ x.swap(y); };
+		{ x.swap(y); };
 
-};
+}; // namespace ft
 
 #endif
