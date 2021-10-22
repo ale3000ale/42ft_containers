@@ -92,7 +92,7 @@ namespace ft
 	private:
 		typedef tree_iterator<value_type, difference_type> _non_const_iterator;
 	public:
-		/*tree_const_iterator() : _ptr(nullptr) {};*/
+		tree_const_iterator() : _ptr(nullptr) {};
 		tree_const_iterator(_non_const_iterator i) : _ptr(i._ptr) {};
 		~tree_const_iterator() {};
 

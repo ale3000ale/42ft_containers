@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/21 18:29:04 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/22 19:58:52 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ namespace ft
 				: _tree(key_compare(comp), allocator_type(a))
 			{ insert(first, last); };
 		
-		map(const map& m, , const allocator_type& a = allocator_type()) : _tree(m._tree, allocator_type(a)) {};
+		map(const map& m, const allocator_type& a = allocator_type()) : _tree(m._tree, allocator_type(a)) {};
 			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?};*/ 
 		
 		explicit map(const allocator_type& a) : _tree(allocator_type(a)) {};
@@ -108,7 +108,7 @@ namespace ft
 		// capacity:
 		bool      empty()    const { return (_tree.size() == 0); };
 		size_type size()     const { return (_tree.size()); };
-		size_type max_size() const { return (_tree.max_size()); };
+		size_type max_size() const { return _tree.max_size(); };
 
 		// element access:
 		mapped_type& operator[](const key_type& k)
@@ -141,12 +141,13 @@ namespace ft
 		pair<iterator, bool>	insert(const value_type& v)
 			{ return (_tree.insert(v)); };
 		iterator				insert(const_iterator position, const value_type& v)
-			{ return (_tree.insert(position, v)); };
+			{ /*return (_tree.insert(position, v));*/ ++position;return (_tree.insert(v));};
 		template <class InputIterator>
 			void insert(InputIterator first, InputIterator last)
 			{
 				for (const_iterator e = cend(); first != last; ++first) // needs check
-                	insert(e, *first);
+                	/*insert(e, *first);*/
+					insert(*first);
 			};
 
 		iterator  erase(const_iterator position)

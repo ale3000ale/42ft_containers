@@ -35,8 +35,8 @@ namespace ft
 		/*-------------------METHODS-------------------*/
 		void	swap(pair& __p)
 		{
-			ft::swap(first,  __p.first);
-			ft::swap(second, __p.second);
+			std::swap(first,  __p.first);
+			std::swap(second, __p.second);
 		}
 	};
 

@@ -6,6 +6,7 @@
 # include "pair.hpp"
 # include "MapIterator.hpp"
 # include <memory> // for std::allocator
+# include <limits>
 
 namespace ft
 {
@@ -79,7 +80,7 @@ namespace ft
 			typedef tree_iterator<value_type, difference_type>			iterator;
 			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
 
-		public:
+		private:
 			
 			
 			allocator_node				alloc;
@@ -159,26 +160,30 @@ namespace ft
 			~base_tree() 
 			{
 				clear_all();
-				destroy_node(end_leaf_pointer);
+				//destroy_node(end_leaf_pointer);
 			};
 
 
 
 			iterator begin()
-				{ return (iterator(root_pointer)); };
+				{ return (iterator(find_first(root_pointer))); };
 			const_iterator begin() const
-				{ return (const_iterator(root_pointer)); };
+				{ return (const_iterator(find_first(root_pointer))); };
 			iterator end()
 				{ return (iterator(end_leaf_pointer)); };
 			const_iterator end() const
 				{ return (const_iterator(end_leaf_pointer)); };
 
-			size_type size()
+			size_type size() const
 				{return _size;}
 
 			size_type max_size() const
 			{
-				return (alloc.max_size());
+				//return (std::numeric_limits<difference_type>::max() / 20);
+				//return std::max<size_type>(alloc.max_size() / sizeof(__node), std::numeric_limits<difference_type >::max());
+				//std::allocator<std::pair<_Tp, _Tp> > a;
+				//return (a.max_size());
+				return (alloc_type.max_size());
 			};
 
 			allocator_node & _node_allocator() const
@@ -233,7 +238,7 @@ namespace ft
 			{
 				__node_pointer node = root_pointer;
 				//value_type k(key);
-				std::cout << "inside find KEY" << std::endl;
+				////std::cout << "inside find KEY" << std::endl;
 				while (node != nullptr)
 				{
 					if (key == node->_value.first)
@@ -257,7 +262,7 @@ namespace ft
 			__node_pointer find(const value_type value) const
 			{
 				__node_pointer node = root_pointer;
-				std::cout << "inside find" << std::endl;
+				////std::cout << "inside find" << std::endl;
 				while (node != nullptr)
 				{
 					if (value == node->_value)
@@ -280,13 +285,13 @@ namespace ft
 						return (node);
 					else if (cmp(value.first, node->_value.first))	//default    node->_value < value
 					{
-						std::cout << "inside find left: " << std::endl;
+						////std::cout << "inside find left: " << std::endl;
 						parent = node;
 						node = node->left;
 					}
 					else
 					{
-						std::cout << "inside find rigth: " << std::endl;
+						////std::cout << "inside find rigth: " << std::endl;
 						parent = node;
 						node = node->right;
 					}
@@ -297,7 +302,7 @@ namespace ft
 		public:
 			__node_pointer find_last(__node_pointer n)
 			{
-				std::cout << "last " << std::endl;
+				////std::cout << "last " << std::endl;
 				if (n->right == nullptr)
 					return n;
 				__node_pointer tmp = n->right;
@@ -311,9 +316,9 @@ namespace ft
 				return find_last(root_pointer);
 			}
 
-			__node_pointer find_first(__node_pointer n)
+			__node_pointer find_first(__node_pointer n) const
 			{
-				std::cout << "first " << std::endl;
+				////std::cout << "first " << std::endl;
 				if (n->left == nullptr)
 					return n;
 				__node_pointer tmp = n->left;
@@ -321,7 +326,7 @@ namespace ft
 					tmp = tmp->left;
 				return tmp;
 			}
-			__node_pointer find_first()
+			__node_pointer find_first()	const
 			{
 				return find_first(root_pointer);
 			}
@@ -360,7 +365,21 @@ namespace ft
 				return iterator(result);
 			}
 			const_iterator lower_bound(const key_type& k) const
-				{ return (lower_bound(k)); };
+			{
+				__node_pointer root = root_pointer;
+				__node_pointer result = end_leaf_pointer;
+				while (root)
+				{ 
+					if (!(cmp(root->value().first, k))) // value >= k
+					{
+						result = root;
+						root = root->left;
+					}
+					else
+						root = root->right;
+				}
+				return const_iterator(result);
+			}
 
 
 			iterator upper_bound(const key_type& k)
@@ -396,8 +415,28 @@ namespace ft
 				return iterator(result);
 			}
 			const_iterator upper_bound(const key_type& k) const
-				{ return (upper_bound(k)); };
+			{
+				__node_pointer root = root_pointer;
+				__node_pointer result = end_leaf_pointer;
+				while (root)
+				{
+					if ((cmp(k, root->value().first))) // k < value
+					{
+						result = root;
+						root = root->left;
+					}
+					else
+						root = root->right;
+				}
+				return const_iterator(result);
+			}
 
+
+			pair<iterator,iterator> equal_range(const key_type& k)
+			{ return (pair<iterator,iterator>(lower_bound(k), upper_bound(k))); };
+
+			pair<const_iterator,const_iterator> equal_range(const key_type& k) const
+			{ return (pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k))); };
 
 
 			/*------------------------TREE NODE MANAGMENT------------------------*/
@@ -428,7 +467,7 @@ namespace ft
 
 			bool is_leaf(__node_pointer n)
 			{
-				std::cout << "leaf? " << std::endl;
+				//std::cout << "leaf? " << std::endl;
 				return (n->left == nullptr &&
 						n->right == nullptr &&
 						n->parent != nullptr);
@@ -437,11 +476,11 @@ namespace ft
 
 			void rotate_left(__node_pointer n)
 			{
-				std::cout << "rotate left " << *n <<std::endl;
+				//std::cout << "rotate left " << *n <<std::endl;
 				
 				__node_pointer supp = n->right->left;
 				n->right->parent = n->parent;
-				//std::cout << "SUPP: CORRECT "<< *n << " \n";
+				////std::cout << "SUPP: CORRECT "<< *n << " \n";
 				if (n->parent != nullptr)
 				{
 					((n->parent->left == n) ? n->parent->left : n->parent->right) = n->right;
@@ -460,7 +499,7 @@ namespace ft
 
 			void rotate_right(__node_pointer n)
 			{
-				std::cout << "rotate rigth: " << *n <<std::endl;
+				//std::cout << "rotate rigth: " << *n <<std::endl;
 				__node_pointer supp = n->left->right;
 				n->left->parent = n->parent;
 				if (n->parent != nullptr)
@@ -484,7 +523,7 @@ namespace ft
 
 			void insert_case1(__node_pointer n)		//insert in root
 			{
-				std::cout << "insert case 1\n"; 
+				//std::cout << "insert case 1\n"; 
 				if (n->parent == nullptr)
 					n->is_black = BLACK;
 				else
@@ -493,7 +532,7 @@ namespace ft
 
 			void insert_case2(__node_pointer n) 
 			{
-				std::cout << "insert case 2\n"; 
+				//std::cout << "insert case 2\n"; 
 				if (n->parent->is_black == BLACK)
 					return; 
 				else
@@ -502,7 +541,7 @@ namespace ft
 
 			void insert_case3(__node_pointer n)
 			{
-				std::cout << "insert case 3\n";
+				//std::cout << "insert case 3\n";
 				if (uncle(n) != NULL && uncle(n)->is_black == RED) {
 					n->parent->is_black = BLACK;
 					uncle(n)->is_black = BLACK;
@@ -515,7 +554,7 @@ namespace ft
 
 			void insert_case4(__node_pointer n)
 			{
-				std::cout << "insert case 4\n"; 
+				//std::cout << "insert case 4\n"; 
 				if (n == n->parent->right && n->parent == grandparent(n)->left) {
 					rotate_left(n->parent);
 					n = n->left;
@@ -528,7 +567,7 @@ namespace ft
 
 			void insert_case5(__node_pointer n)
 			{
-				std::cout << "insert case 5\n";
+				//std::cout << "insert case 5\n";
 				n->parent->is_black = BLACK;
 				grandparent(n)->is_black = RED;
 				if (n == n->parent->left && n->parent == grandparent(n)->left) 
@@ -544,19 +583,21 @@ namespace ft
 			iterator insert(value_type value)
 			{
 				__node_pointer node, parent;
-				//std::cout << "insert: " << root_pointer << std::endl;
+
+				////std::cout << "insert: " << root_pointer << std::endl;
 				if (root_pointer == nullptr)
 				{
 					root_pointer = create_node(value);
 					root_pointer->is_black = true;
-					//std::cout << "root \n"; 
+					////std::cout << "root \n"; 
 					node = root_pointer;
 					end_leaf_pointer = create_node(root_pointer);
 				}
 				else
 				{
+					end_leaf_pointer->parent->right = nullptr;
 					node = find(value , parent);
-					//std::cout << "find: " << parent << std::endl;
+					////std::cout << "find: " << parent << std::endl;
 					if (node == nullptr)
 					{
 						node = create_node(value, parent);
@@ -564,10 +605,15 @@ namespace ft
 						insert_case1(node);
 					}
 					else
-						node->_value.second = value.second;
+						return (iterator(node));
 				}
 				if (end_leaf_pointer->parent->right == node)
+				{
+					node->right = end_leaf_pointer;
 					end_leaf_pointer->parent = node;
+				}
+				else
+					end_leaf_pointer->parent->right = end_leaf_pointer;
 				return (iterator(node));
 			}
 
@@ -578,7 +624,7 @@ namespace ft
 		private:
 			void replace_node(__node_pointer n, __node_pointer child)
 			{
-				std::cout << "replace: " << n << " -> " << child << std::endl;
+				//std::cout << "replace: " << n << " -> " << child << std::endl;
 				if (child != nullptr)
 				{
 					if (child != n->left)
@@ -610,7 +656,7 @@ namespace ft
 
 			void delete_case1(__node_pointer n)
 			{
-				std::cout << "delete 1\n";
+				//std::cout << "delete 1\n";
 				if (n->parent == NULL)
 					return;
 				else
@@ -619,7 +665,7 @@ namespace ft
 
 			void delete_case2(__node_pointer n)
 			{
-				std::cout << "delete 2\n";
+				//std::cout << "delete 2\n";
 				if (sibling(n)->is_black == RED) 
 				{
 					n->parent->is_black = RED;
@@ -634,7 +680,7 @@ namespace ft
 
 			 void delete_case3(__node_pointer n)
 			 {
-				 std::cout << "delete 3\n";
+				 //std::cout << "delete 3\n";
 				if (n->parent->is_black == BLACK &&
 					sibling(n)->is_black == BLACK &&
 					(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK) &&
@@ -649,7 +695,7 @@ namespace ft
 
 			void delete_case4(__node_pointer n)
 			{
-				std::cout << "delete 4\n";
+				//std::cout << "delete 4\n";
 				if (n->parent->is_black == RED &&
 					sibling(n)->is_black == BLACK &&
 					(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK) &&
@@ -664,7 +710,7 @@ namespace ft
 
 			 void delete_case5(__node_pointer n) 
 			 {
-				 std::cout << "delete 5\n";
+				 //std::cout << "delete 5\n";
 				if (n == n->parent->left &&
 					sibling(n)->is_black == BLACK &&
 					(sibling(n)->left != nullptr && sibling(n)->left->is_black == RED) &&
@@ -688,7 +734,7 @@ namespace ft
 
 			void delete_case6(__node_pointer n) 
 			{
-				std::cout << "delete 6\n";
+				//std::cout << "delete 6\n";
 				sibling(n)->is_black = n->parent->is_black;
 				n->parent->is_black = BLACK;
 				if (n == n->parent->left) {
@@ -713,24 +759,24 @@ namespace ft
 				if (n->left != nullptr && n->right != nullptr)
 				{
 					// childrens > 1
-					std::cout << "delete double child" << *n << std::endl;
+					//std::cout << "delete double child" << *n << std::endl;
 					tmp = find_last(n->left);
-					ft::swap<value_type>(tmp->_value, n->_value);
+					std::swap<value_type>(tmp->_value, n->_value);
 					erase(tmp);
 					return;
 				}
 
 				/* Si assume che n ha al massimo un figlio non nullo */
-				std::cout << "delete: " << *n << std::endl;
+				//std::cout << "delete: " << *n << std::endl;
 				__node_pointer child = (n->left == nullptr) ? n->right: n->left;
 				if (n->is_black == BLACK )
 					delete_case1(n);
 				replace_node(n, child);
-				std::cout << "AO CLEAR FATHER" << std::endl;
+				//std::cout << "AO CLEAR FATHER" << std::endl;
 				if (n->is_black == BLACK && child != nullptr) 
 				{
 
-					std::cout << "AO " << std::endl;
+					//std::cout << "AO " << std::endl;
 					if (child->is_black == RED)
 						child->is_black = BLACK;
 					else
@@ -748,7 +794,7 @@ namespace ft
 			{
 				const_iterator actual = first;
 				const_iterator next = ++first;
-				std::cout << *actual._ptr << "  "<< *next._ptr << "  " << *last._ptr << std::endl;
+				//std::cout << *actual._ptr << "  "<< *next._ptr << "  " << *last._ptr << std::endl;
 				while (actual != last)
 				{
 					erase(actual);
