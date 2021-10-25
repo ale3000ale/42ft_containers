@@ -763,6 +763,9 @@ namespace ft
 
 			iterator erase(__node_pointer n)
 			{
+				iterator it(n);
+				++it;
+				end_leaf_pointer->parent->right = nullptr;
 				if (root_pointer != nullptr && n == end_leaf_pointer->parent)
 				{
 					end_leaf_pointer->parent = n->parent;
@@ -771,8 +774,7 @@ namespace ft
 				}
 					
 				__node_pointer tmp;
-				iterator it(n);
-				++it;
+				
 				if (n->left != nullptr && n->right != nullptr)
 				{
 					// childrens > 1
@@ -800,7 +802,7 @@ namespace ft
 					else
 						delete_case1(child);
 				}
-				
+				end_leaf_pointer->parent->right = end_leaf_pointer;
 				destroy_node(n);
 				return (it);
 			}
