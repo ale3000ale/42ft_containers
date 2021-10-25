@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/22 22:52:59 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/25 21:36:08 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ namespace ft
 		void swap(map& m)
 			{ _tree.swap(m._tree); };
 
-	private:
+	public:
 
 		_base	_tree;
 		value_type _new_pair(const key_type& k) const

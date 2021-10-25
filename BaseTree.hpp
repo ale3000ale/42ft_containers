@@ -40,6 +40,7 @@ namespace ft
 	template <class NodePtr>
 	NodePtr tree_next_node(NodePtr x)
 	{
+
 		if (x->right != nullptr)
 			return (tree_min(x->right));
 		while (!tree_is_left_child(x))
@@ -95,17 +96,17 @@ namespace ft
 			};
 
 			explicit base_tree(const value_compare& __comp): 
-				cmp(__comp),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
+				cmp(__comp),root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
 			{
 			};
 
 			explicit base_tree(const allocator_type& __a): 
-				alloc_type(__a),root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
+				alloc_type(__a),root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
 			{
 			};
 
 			base_tree(const value_compare& __comp, const allocator_type& __a): 
-				cmp(__comp), alloc_type(__a), root_pointer(nullptr), end_leaf_pointer(nullptr), _size(0)
+				cmp(__comp), alloc_type(__a), root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
 			{
 			};
 			
@@ -590,7 +591,7 @@ namespace ft
 			iterator insert(value_type value)
 			{
 				__node_pointer node, parent;
-
+				//std::cout << value << std::endl;
 				////std::cout << "insert: " << root_pointer << std::endl;
 				if (root_pointer == nullptr)
 				{
@@ -598,7 +599,7 @@ namespace ft
 					root_pointer->is_black = true;
 					////std::cout << "root \n"; 
 					node = root_pointer;
-					end_leaf_pointer = create_node(root_pointer);
+					end_leaf_pointer->parent = root_pointer;
 				}
 				else
 				{
@@ -663,7 +664,7 @@ namespace ft
 
 			void delete_case1(__node_pointer n)
 			{
-				//std::cout << "delete 1\n";
+				//std::cout << "delete 1  " << *n << std::endl;
 				if (n->parent == NULL)
 					return;
 				else
@@ -673,7 +674,7 @@ namespace ft
 			void delete_case2(__node_pointer n)
 			{
 				//std::cout << "delete 2\n";
-				if (sibling(n)->is_black == RED) 
+				if (sibling(n) && sibling(n)->is_black == RED) 
 				{
 					n->parent->is_black = RED;
 					sibling(n)->is_black = BLACK;
@@ -688,6 +689,8 @@ namespace ft
 			 void delete_case3(__node_pointer n)
 			 {
 				 //std::cout << "delete 3\n";
+				 if (!sibling(n))
+					return;
 				if (n->parent->is_black == BLACK &&
 					sibling(n)->is_black == BLACK &&
 					(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK) &&
@@ -717,10 +720,10 @@ namespace ft
 
 			void delete_case5(__node_pointer n) 
 			{
-				 //std::cout << "delete 5\n";
+				// std::cout << "delete 5\n";
 				if (n == n->parent->left &&
 					sibling(n)->is_black == BLACK &&
-					(sibling(n)->left != nullptr && sibling(n)->left->is_black == RED) &&
+					(sibling(n)->left == nullptr || sibling(n)->left->is_black == RED) &&
 					(sibling(n)->right == nullptr || sibling(n)->right->is_black == BLACK))
 				{
 					sibling(n)->is_black = RED;
@@ -729,7 +732,7 @@ namespace ft
 				}
 				else if (n == n->parent->right &&
 						sibling(n)->is_black == BLACK &&
-						(sibling(n)->right != nullptr && sibling(n)->right->is_black == RED) &&
+						(sibling(n)->right == nullptr || sibling(n)->right->is_black == RED) &&
 						(sibling(n)->left == nullptr || sibling(n)->left->is_black == BLACK))
 				{
 					sibling(n)->is_black = RED;
@@ -761,36 +764,45 @@ namespace ft
 			iterator erase(__node_pointer n)
 			{
 				if (root_pointer != nullptr && n == end_leaf_pointer->parent)
+				{
 					end_leaf_pointer->parent = n->parent;
+					if (n == root_pointer)
+						end_leaf_pointer->parent = n->left;
+				}
+					
 				__node_pointer tmp;
+				iterator it(n);
+				++it;
 				if (n->left != nullptr && n->right != nullptr)
 				{
 					// childrens > 1
 					//std::cout << "delete double child" << *n << std::endl;
 					tmp = find_last(n->left);
 					std::swap<value_type>(tmp->_value, n->_value);
-					return erase(tmp);
+					erase(tmp);
+					return (it);
 				}
-
+				
+				//std::cout << *it._ptr << std::endl;
 				/* Si assume che n ha al massimo un figlio non nullo */
 				//std::cout << "delete: " << *n << std::endl;
 				__node_pointer child = (n->left == nullptr) ? n->right: n->left;
-				if (n->is_black == BLACK )
+				if (child == nullptr)
 					delete_case1(n);
 				replace_node(n, child);
+				
 				//std::cout << "AO CLEAR FATHER" << std::endl;
 				if (n->is_black == BLACK && child != nullptr) 
 				{
-
 					//std::cout << "AO " << std::endl;
 					if (child->is_black == RED)
 						child->is_black = BLACK;
 					else
 						delete_case1(child);
 				}
-				tmp = tree_next_node(n);
+				
 				destroy_node(n);
-				return (iterator(tmp));
+				return (it);
 			}
 
 			iterator erase(const_iterator n)
@@ -801,12 +813,16 @@ namespace ft
 			iterator erase(const_iterator first, const_iterator last)
 			{
 				iterator ret(first._ptr);
-
+				iterator ret2;
+				
 				while (ret != last)
 				{
-					std::cout << *first._ptr << " == "<< *last._ptr << std::endl;
+					//std::cout << *ret._ptr << " == "<< *last._ptr << std::endl;
 					ret = erase(ret._ptr);
-					std::cout << *first._ptr << " == "<< *last._ptr << std::endl;
+					ret2 = ret;
+
+					//std::cout << *ret._ptr << " == "<< *last._ptr << std::endl;
+					//std::cout << *((++ret2)._ptr) << " == "<< *last._ptr << std::endl;
 				}
 				
 				return (ret);
