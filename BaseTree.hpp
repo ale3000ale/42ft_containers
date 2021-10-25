@@ -67,7 +67,6 @@ namespace ft
 			typedef _Tp                                     	value_type;
 			typedef _Compare                                 	value_compare;
 			typedef _Allocator                               	allocator_type;
-			typedef typename value_type::first_type				key_type;
 
 			typedef binary_node<value_type>						__node;
 			typedef binary_node<value_type>*					__node_pointer;
@@ -81,7 +80,6 @@ namespace ft
 			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
 
 		public:
-			
 			
 			allocator_node				alloc;
 			value_compare				cmp;
@@ -137,12 +135,12 @@ namespace ft
 
 			void swap(base_tree& other)
 			{
-				ft::swap(this->root_pointer, other.root_pointer);
-				ft::swap(this->end_leaf_pointer, other.end_leaf_pointer);
-				this->alloc.swap(other.alloc);
-				this->alloc_type.swap(other.alloc_type);
-				ft::swap(this->_size, other._size);
-				ft::swap(this->cmp, other.cmp);
+				std::swap(this->root_pointer, other.root_pointer);
+				std::swap(this->end_leaf_pointer, other.end_leaf_pointer);
+				std::swap(this->alloc, other.alloc);
+				std::swap(this->alloc_type, other.alloc_type);
+				std::swap(this->_size, other._size);
+				std::swap(this->cmp, other.cmp);
 			};
 
 		private:
@@ -174,8 +172,6 @@ namespace ft
 				clear_all();
 				//destroy_node(end_leaf_pointer);
 			};
-
-
 
 			iterator begin()
 				{ return (iterator(find_first(root_pointer))); };
@@ -246,16 +242,16 @@ namespace ft
 				
 			}
 
-			iterator find(const key_type key)		const
+			iterator find(const value_type value)		const
 			{
 				__node_pointer node = root_pointer;
 				//value_type k(key);
 				////std::cout << "inside find KEY" << std::endl;
 				while (node != nullptr)
 				{
-					if (key == node->_value.first)
+					if (!cmp(value, node->_value) && !cmp(node->_value, value))
 						return (iterator(node));
-					else if (cmp(key, node->_value.first))	//default    node->_value < value
+					else if (cmp(value, node->_value))	//default    node->_value < value
 						node = node->left;
 					else
 						node = node->right;
@@ -263,29 +259,28 @@ namespace ft
 				return (iterator(end_leaf_pointer));
 			}
 
-			size_type count(const key_type& k)
+			size_type count(const value_type& value) const
 			{
-				if (find(k) == end_leaf_pointer)
+				if (find(value) == end())
 					return (0);
 				return (1);
 			}
 
 		private:
-			__node_pointer find(const value_type value) const
+			/*__node_pointer __find(const key_type& key) const
 			{
 				__node_pointer node = root_pointer;
-				////std::cout << "inside find" << std::endl;
 				while (node != nullptr)
 				{
-					if (value == node->_value)
+					if (key == node->_value.first)
 						return (node);
-					else if (cmp(value, node->_value))	//default    node->_value < value
+					else if (cmp(key, node->_value.first))	//default    node->_value < value
 						node = node->left;
 					else
 						node = node->right;
 				}
-				return (node);
-			}
+				return (end_leaf_pointer);
+			}*/
 
 			__node_pointer find(const value_type value, __node_pointer &parent) const
 			{
@@ -293,9 +288,9 @@ namespace ft
 				parent = node;
 				while (node != nullptr)
 				{
-					if (value == node->_value)
+					if (!cmp(value, node->_value) && !cmp(node->_value, value)) // value == node->_value
 						return (node);
-					else if (cmp(value.first, node->_value.first))	//default    node->_value < value
+					else if (cmp(value, node->_value))	//default    node->_value < value
 					{
 						////std::cout << "inside find left: " << std::endl;
 						parent = node;
@@ -344,13 +339,13 @@ namespace ft
 			}
 
 
-			iterator lower_bound(const key_type& k)
+			iterator lower_bound(const value_type& value)
 			{
 				__node_pointer root = root_pointer;
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{ 
-					if (!(cmp(root->value().first, k))) // value >= k
+					if (!(cmp(root->_value, value))) // value >= k
 					{
 						result = root;
 						root = root->left;
@@ -361,12 +356,12 @@ namespace ft
 				return iterator(result);
 			}
 
-			iterator lower_bound(const key_type& k, __node_pointer root)
+			iterator lower_bound(const value_type& value, __node_pointer root)
 			{
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{ 
-					if (!(cmp(root->value().first, k))) // value >= k
+					if (!(cmp(root->_value, value))) // value >= k
 					{
 						result = root;
 						root = root->left;
@@ -376,13 +371,13 @@ namespace ft
 				}
 				return iterator(result);
 			}
-			const_iterator lower_bound(const key_type& k) const
+			const_iterator lower_bound(const value_type& value) const
 			{
 				__node_pointer root = root_pointer;
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{ 
-					if (!(cmp(root->value().first, k))) // value >= k
+					if (!(cmp(root->_value, value))) // value >= k
 					{
 						result = root;
 						root = root->left;
@@ -394,13 +389,13 @@ namespace ft
 			}
 
 
-			iterator upper_bound(const key_type& k)
+			iterator upper_bound(const value_type& value)
 			{
 				__node_pointer root = root_pointer;
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{
-					if ((cmp(k, root->value().first))) // k < value
+					if (cmp(value, root->_value)) // k < value
 					{
 						result = root;
 						root = root->left;
@@ -411,12 +406,12 @@ namespace ft
 				return iterator(result);
 			}
 
-			iterator upper_bound(const key_type& k, __node_pointer root)
+			iterator upper_bound(const value_type& value, __node_pointer root)
 			{
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{
-					if ((cmp(k, root->value().first))) // k < value
+					if (cmp(value, root->_value)) // k < value
 					{
 						result = root;
 						root = root->left;
@@ -426,13 +421,13 @@ namespace ft
 				}
 				return iterator(result);
 			}
-			const_iterator upper_bound(const key_type& k) const
+			const_iterator upper_bound(const value_type& value) const
 			{
 				__node_pointer root = root_pointer;
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{
-					if ((cmp(k, root->value().first))) // k < value
+					if (cmp(value, root->_value)) // k < value
 					{
 						result = root;
 						root = root->left;
@@ -444,11 +439,11 @@ namespace ft
 			}
 
 
-			pair<iterator,iterator> equal_range(const key_type& k)
-			{ return (pair<iterator,iterator>(lower_bound(k), upper_bound(k))); };
+			pair<iterator,iterator> equal_range(const value_type& value)
+			{ return (pair<iterator,iterator>(lower_bound(value), upper_bound(value))); };
 
-			pair<const_iterator,const_iterator> equal_range(const key_type& k) const
-			{ return (pair<const_iterator,const_iterator>(lower_bound(k), upper_bound(k))); };
+			pair<const_iterator,const_iterator> equal_range(const value_type& value) const
+			{ return (pair<const_iterator,const_iterator>(lower_bound(value), upper_bound(value))); };
 
 
 			/*------------------------TREE NODE MANAGMENT------------------------*/
@@ -720,8 +715,8 @@ namespace ft
 					delete_case5(n);
 			}
 
-			 void delete_case5(__node_pointer n) 
-			 {
+			void delete_case5(__node_pointer n) 
+			{
 				 //std::cout << "delete 5\n";
 				if (n == n->parent->left &&
 					sibling(n)->is_black == BLACK &&
@@ -775,7 +770,6 @@ namespace ft
 					tmp = find_last(n->left);
 					std::swap<value_type>(tmp->_value, n->_value);
 					return erase(tmp);
-					
 				}
 
 				/* Si assume che n ha al massimo un figlio non nullo */
@@ -830,6 +824,17 @@ namespace ft
 				} */
 				//return erase(actual);
 			}
+
+			size_type erase(const value_type& k)
+			{
+				iterator i = find(k);
+				if (i != end())
+				{
+					erase(i);
+					return (1);
+				}
+				return (0);
+			};
 
 		private:
 			void destroy_all(__node_pointer &n)

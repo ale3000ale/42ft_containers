@@ -83,7 +83,8 @@ namespace ft
 		/*---------ACCESS OPERATOR---------*/
 		reference operator*() const 
 		{
-			return (*(it - 1));
+			iterator_type tmp = it;
+			return (*(--tmp));
 		}
 
 		pointer  operator->() const 
