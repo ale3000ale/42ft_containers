@@ -175,9 +175,17 @@ namespace ft
 			};
 
 			iterator begin()
-				{ return (iterator(find_first(root_pointer))); };
+				{
+					if (_size == 0)
+						return (iterator(end_leaf_pointer));
+					return (iterator(find_first(root_pointer))); 
+				};
 			const_iterator begin() const
-				{ return (const_iterator(find_first(root_pointer))); };
+				{
+					if (_size == 0)
+						return (const_iterator(end_leaf_pointer));
+					return (const_iterator(find_first(root_pointer)));
+				};
 			iterator end()
 				{ return (iterator(end_leaf_pointer)); };
 			const_iterator end() const
@@ -766,6 +774,13 @@ namespace ft
 				iterator it(n);
 				++it;
 				
+
+				if (_size == 1)
+				{
+					destroy_node(n);
+					root_pointer = nullptr;
+					end_leaf_pointer->parent = nullptr;
+				}
 				if (n == root_pointer && n == end_leaf_pointer->parent)
 				{
 					end_leaf_pointer->parent = nullptr;
