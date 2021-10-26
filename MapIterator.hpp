@@ -19,12 +19,18 @@ namespace ft
 		typedef T							value_type;
 		typedef DiffType					difference_type;
 		typedef value_type&					reference;
+		typedef const value_type&		    const_reference;
 		typedef value_type*					pointer;
+		//typedef const value_type*			const_pointer;
 
 		tree_iterator() : _ptr(nullptr) {};
 		/* tree_iterator(tree_iterator<value_type, difference_type> const & other) : _ptr(other._ptr) {}; */
 		~tree_iterator() {};
 
+		/*const_reference operator*() const
+			{ return (_ptr->_value); };
+		const pointer operator->() const
+			{ return (&(_ptr->_value)); };*/
 		reference operator*() const
 			{ return (_ptr->_value); };
 		pointer operator->() const
@@ -93,7 +99,7 @@ namespace ft
 		typedef tree_iterator<value_type, difference_type> _non_const_iterator;
 	public:
 		tree_const_iterator() : _ptr(nullptr) {};
-		tree_const_iterator(_non_const_iterator i) : _ptr(i._ptr) {};
+		tree_const_iterator(const _non_const_iterator i) : _ptr(i._ptr) {};
 		~tree_const_iterator() {};
 
 		reference operator*() const

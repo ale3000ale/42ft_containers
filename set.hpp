@@ -29,7 +29,7 @@ namespace ft
 	private:
 		typedef base_tree<value_type, key_compare, allocator_type>	_base;
 	public:
-		typedef typename _base::iterator				 iterator;
+		typedef typename _base::const_iterator		 	 iterator;
 		typedef typename _base::const_iterator		     const_iterator;
 		typedef ft::reverse_iterator<iterator>		     reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>     const_reverse_iterator;
@@ -83,7 +83,10 @@ namespace ft
 		pair<iterator,bool> insert(const value_type& v)
 			{ return (_tree.insert(v)); };
 		iterator insert(const_iterator position, const value_type& v)
-			{ return (_tree.insert(position, v)); };
+			{ 
+				if (position != cend())
+					++position;
+				return (_tree.insert(v)).first; };
 		template <class InputIterator>
 			void insert(InputIterator first, InputIterator last)
 			{
@@ -97,7 +100,7 @@ namespace ft
 		iterator  erase(const_iterator first, const_iterator last)
 			{ return (_tree.erase(first, last)); };
 		void clear()
-			{ _tree.clear(); };
+			{ _tree.clear_all(); };
 
 		void swap(set& s)
 			{ _tree.swap(s._tree); };
