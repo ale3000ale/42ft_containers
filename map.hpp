@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/26 16:26:39 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/26 17:17:55 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ namespace ft
 			if (node == end())
 			{
 				//value_type v = value_type(k, mapped_type()); // dont know if it is correct
-				node = _tree.insert(_new_pair(k));
+				node = _tree.insert(_new_pair(k)).first;
 			}
 			return ((*node).second);
 		};
@@ -144,7 +144,7 @@ namespace ft
 			{
 				if (position != cend())
 					++position;
-				return (_tree.insert(v));
+				return (_tree.insert(v).first);
 			};
 		
 		template <class InputIterator>
@@ -199,7 +199,7 @@ namespace ft
 		void swap(map& m)
 			{ _tree.swap(m._tree); };
 
-	public:
+	private:
 
 		_base	_tree;
 		value_type _new_pair(const key_type& k) const

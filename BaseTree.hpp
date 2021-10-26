@@ -80,7 +80,7 @@ namespace ft
 			typedef tree_iterator<value_type, difference_type>			iterator;
 			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
 
-		public:
+		private:
 			
 			allocator_node				alloc;
 			value_compare				cmp;
@@ -128,7 +128,6 @@ namespace ft
 					cmp = __t.cmp;
 
 					root_pointer = copy_tree(__t.end_leaf_pointer, __t.root_pointer);
-					//end_leaf_pointer = create_node(find_last(root_pointer));
 					_size =__t.size();
 				}
 				return (*this);
@@ -171,7 +170,7 @@ namespace ft
 			~base_tree() 
 			{
 				clear_all();
-				//destroy_node(end_leaf_pointer);
+				destroy_node(end_leaf_pointer);
 			};
 
 			iterator begin()
@@ -597,7 +596,7 @@ namespace ft
 				}
 			}
 		public:
-			iterator insert(value_type value)
+			ft::pair<iterator, bool> insert(value_type value)
 			{
 				__node_pointer node, parent;
 				//std::cout << value << std::endl;
@@ -624,7 +623,7 @@ namespace ft
 					else
 					{
 						end_leaf_pointer->parent->right = end_leaf_pointer;
-						return (iterator(node));
+						return (ft::pair<iterator, bool>(iterator(node), false));
 					}
 				}
 				if (end_leaf_pointer->parent->right == node)
@@ -634,7 +633,7 @@ namespace ft
 				}
 				else
 					end_leaf_pointer->parent->right = end_leaf_pointer;
-				return (iterator(node));
+				return (ft::pair<iterator, bool>(iterator(node), true));
 			}
 
 
@@ -781,19 +780,15 @@ namespace ft
 
 				if (_size == 1)
 				{
+					//std::cout << n << " AOOOOOO\n";
 					destroy_node(n);
 					root_pointer = nullptr;
 					end_leaf_pointer->parent = nullptr;
-				}
-				if (n == root_pointer && n == end_leaf_pointer->parent)
-				{
-					end_leaf_pointer->parent = nullptr;
-					destroy_node(n);
 					return (it);
 				}
-				if (n == end_leaf_pointer->parent)
+				else if (n == end_leaf_pointer->parent)
 				{
-	
+					//std::cout << *n << " AOOOOOO2\n";
 					n->right = nullptr;
 					end_leaf_pointer->parent = (n->parent) ? n->parent : n->left;
 				}
@@ -880,7 +875,7 @@ namespace ft
 		private:
 			void destroy_all(__node_pointer &n)
 			{
-				if (n != nullptr)
+				if (n != nullptr && n != end_leaf_pointer)
 				{
 					if (n->right != nullptr)
 						destroy_all(n->right);
@@ -893,7 +888,6 @@ namespace ft
 			void clear_all()
 			{
 				destroy_all(root_pointer);
-				end_leaf_pointer = nullptr;
 			}
 
 	};
