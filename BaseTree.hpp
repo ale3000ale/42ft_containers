@@ -765,21 +765,27 @@ namespace ft
 			{
 				iterator it(n);
 				++it;
-				end_leaf_pointer->parent->right = nullptr;
-				if (root_pointer != nullptr && n == end_leaf_pointer->parent)
+				
+				if (n == root_pointer && n == end_leaf_pointer->parent)
 				{
-					end_leaf_pointer->parent = n->parent;
-					if (n == root_pointer)
-						end_leaf_pointer->parent = n->left;
+					end_leaf_pointer->parent = nullptr;
+					destroy_node(n);
+					return (it);
 				}
-					
-				__node_pointer tmp;
+				if (n == end_leaf_pointer->parent)
+				{
+	
+					n->right = nullptr;
+					end_leaf_pointer->parent = (n->parent) ? n->parent : n->left;
+				}
+				if (end_leaf_pointer->parent)
+					end_leaf_pointer->parent->right = nullptr;
 				
 				if (n->left != nullptr && n->right != nullptr)
 				{
 					// childrens > 1
 					//std::cout << "delete double child" << *n << std::endl;
-					tmp = find_last(n->left);
+					__node_pointer tmp = find_last(n->left);
 					std::swap<value_type>(tmp->_value, n->_value);
 					erase(tmp);
 					return (it);
@@ -815,13 +821,11 @@ namespace ft
 			iterator erase(const_iterator first, const_iterator last)
 			{
 				iterator ret(first._ptr);
-				iterator ret2;
 				
 				while (ret != last)
 				{
 					//std::cout << *ret._ptr << " == "<< *last._ptr << std::endl;
 					ret = erase(ret._ptr);
-					ret2 = ret;
 
 					//std::cout << *ret._ptr << " == "<< *last._ptr << std::endl;
 					//std::cout << *((++ret2)._ptr) << " == "<< *last._ptr << std::endl;
