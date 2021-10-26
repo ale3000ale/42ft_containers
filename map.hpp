@@ -108,7 +108,7 @@ namespace ft
 		// capacity:
 		bool      empty()    const { return (_tree.size() == 0); };
 		size_type size()     const { return (_tree.size()); };
-		size_type max_size() const { return (_tree_allocator().max_size()); };
+		size_type max_size() const { return (_tree.max_size()); };
 
 		// element access:
 		mapped_type& operator[](const key_type& k)

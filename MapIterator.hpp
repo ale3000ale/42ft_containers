@@ -28,13 +28,13 @@ namespace ft
 		~tree_iterator() {};
 
 		/*const_reference operator*() const
-			{ return (_ptr->_value); };
+			{ return (_ptr->value()); };
 		const pointer operator->() const
 			{ return (&(_ptr->_value)); };*/
 		reference operator*() const
-			{ return (_ptr->_value); };
+			{ return (_ptr->value()); };
 		pointer operator->() const
-			{ return (&(_ptr->_value)); };
+			{ return (&(_ptr->value())); };
 
 		tree_iterator& operator++()
 		{
@@ -103,9 +103,9 @@ namespace ft
 		~tree_const_iterator() {};
 
 		reference operator*() const
-			{ return (_ptr->_value); };
+			{ return (_ptr->value()); };
 		pointer operator->() const
-			{ return (&(_ptr->_value)); };
+			{ return (&(_ptr->value())); };
 
 		tree_const_iterator& operator++()
 		{

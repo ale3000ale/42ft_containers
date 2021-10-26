@@ -61,33 +61,33 @@ namespace ft
 	//TODO: sostituire il bynary node con il tree_node
 	template <	class _Tp,
 				class _Compare, 
-				class _Allocator = std::allocator<binary_node<_Tp> > >
+				class _Allocator = std::allocator<_Tp> >
 	class base_tree
 	{
 		public:
 			typedef _Tp                                     	value_type;
 			typedef _Compare                                 	value_compare;
-			typedef _Allocator                               	allocator_type;
+			typedef _Allocator                               	value_allocator;
 
 			typedef binary_node<value_type>						__node;
 			typedef binary_node<value_type>*					__node_pointer;
 			typedef __node_pointer								__parent_pointer;
 			typedef __node_pointer								__iter_pointer;
-			typedef std::allocator<__node>						allocator_node;
-			typedef typename allocator_node::difference_type	difference_type;
-			typedef typename allocator_node::size_type       	size_type;
+			typedef std::allocator<__node>						node_allocator;
+			typedef typename node_allocator::difference_type	difference_type;
+			typedef typename node_allocator::size_type       	size_type;
 
 			typedef tree_iterator<value_type, difference_type>			iterator;
 			typedef tree_const_iterator<value_type, difference_type>	const_iterator;
 
 		private:
 			
-			allocator_node				alloc;
+			node_allocator				node_alloc;
 			value_compare				cmp;
 			__node_pointer				root_pointer;
 			__node_pointer				end_leaf_pointer;
 			size_type					_size;
-			allocator_type				alloc_type;
+			value_allocator				value_alloc;
 
 		public:
 
@@ -100,20 +100,20 @@ namespace ft
 			{
 			};
 
-			explicit base_tree(const allocator_type& __a): 
-				alloc_type(__a),root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
+			explicit base_tree(const value_allocator& __a): 
+				value_alloc(__a),root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
 			{
 			};
 
-			base_tree(const value_compare& __comp, const allocator_type& __a): 
-				cmp(__comp), alloc_type(__a), root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
+			base_tree(const value_compare& __comp, const value_allocator& __a): 
+				cmp(__comp), value_alloc(__a), root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
 			{
 			};
 			
 
-			base_tree(const base_tree& __t, const allocator_type& __a = allocator_type())
+			base_tree(const base_tree& __t, const value_allocator& __a = value_allocator())
 			{
-				alloc_type = __a;
+				value_alloc = __a;
 				*this = __t;
 				
 			};
@@ -124,7 +124,8 @@ namespace ft
 				if (this != &__t)
 				{
 					clear_all();
-					alloc = __t.alloc;
+					node_alloc = __t.node_alloc;
+					value_alloc = __t.value_alloc;
 					cmp = __t.cmp;
 
 					root_pointer = copy_tree(__t.end_leaf_pointer, __t.root_pointer);
@@ -137,8 +138,8 @@ namespace ft
 			{
 				std::swap(this->root_pointer, other.root_pointer);
 				std::swap(this->end_leaf_pointer, other.end_leaf_pointer);
-				std::swap(this->alloc, other.alloc);
-				std::swap(this->alloc_type, other.alloc_type);
+				std::swap(this->node_alloc, other.node_alloc);
+				std::swap(this->value_alloc, other.value_alloc);
 				std::swap(this->_size, other._size);
 				std::swap(this->cmp, other.cmp);
 			};
@@ -149,9 +150,9 @@ namespace ft
 				__node_pointer n;
 				if (cp != end)
 					n = (parent) ?
-						create_node(cp->_value, parent)
+						create_node(cp->value(), parent)
 					:
-						create_node(cp->_value);
+						create_node(cp->value());
 				else
 					n = create_node(parent);
 
@@ -195,13 +196,13 @@ namespace ft
 
 			size_type max_size() const
 			{
-				return (alloc_type.max_size());
+				return (value_alloc.max_size());
 			};
 
-			allocator_node & _node_allocator() const
-				{ return (alloc); };
-			allocator_type & _value_allocator() const
-				{ return (alloc_type); };
+			node_allocator & _node_allocator() const
+				{ return (node_alloc); };
+			value_allocator & _value_allocator() const
+				{ return (value_alloc); };
 			const value_compare & _value_compare() const
 				{ return (cmp); };
 
@@ -210,16 +211,19 @@ namespace ft
 
 			__node_pointer create_node(value_type value)
 			{
-				__node_pointer node = alloc.allocate(1);
+				__node_pointer node = node_alloc.allocate(1);
+				value_type *new_value = value_alloc.allocate(1);
+				value_alloc.construct(new_value, value);
 				_size++;
-				alloc.construct(node, value);
+				node_alloc.construct(node, new_value);
 				return (node);
 			}
 
 			__node_pointer create_node( __node_pointer parent)
 			{
-				__node_pointer node = alloc.allocate(1);
-				alloc.construct(node);
+				/*__node_pointer node = node_alloc.allocate(1);
+				node_alloc.construct(node);*/
+				__node_pointer node = create_node(value_type());
 				node->__set_parent(parent);
 				return (node);
 			}
@@ -227,7 +231,7 @@ namespace ft
 			__node_pointer create_node(value_type value, __node_pointer &parent)
 			{
 				__node_pointer node = create_node(value);
-				if (cmp(value, parent->_value))
+				if (cmp(value, parent->value()))
 					parent->left = node;
 				else
 					parent->right = node;
@@ -245,10 +249,11 @@ namespace ft
 					end_leaf_pointer->parent = n->parent;
 				if (n != end_leaf_pointer)
 					_size--;
-				alloc.destroy(n);
-				alloc.deallocate(n, 1);
+				value_alloc.destroy(n->_value);
+				value_alloc.deallocate(n->_value, 1);
+				node_alloc.destroy(n);
+				node_alloc.deallocate(n, 1);
 				n = nullptr;
-				
 			}
 
 			iterator find(const value_type value)		const
@@ -258,9 +263,9 @@ namespace ft
 				////std::cout << "inside find KEY" << std::endl;
 				while (node != nullptr)
 				{
-					if (!cmp(value, node->_value) && !cmp(node->_value, value))
+					if (!cmp(value, node->value()) && !cmp(node->value(), value))
 						return (iterator(node));
-					else if (cmp(value, node->_value))	//default    node->_value < value
+					else if (cmp(value, node->value()))	//default    node->_value < value
 						node = node->left;
 					else
 						node = node->right;
@@ -297,9 +302,9 @@ namespace ft
 				parent = node;
 				while (node != nullptr)
 				{
-					if (!cmp(value, node->_value) && !cmp(node->_value, value)) // value == node->_value
+					if (!cmp(value, node->value()) && !cmp(node->value(), value)) // value == node->_value
 						return (node);
-					else if (cmp(value, node->_value))	//default    node->_value < value
+					else if (cmp(value, node->value()))	//default    node->_value < value
 					{
 						////std::cout << "inside find left: " << std::endl;
 						parent = node;
@@ -354,7 +359,7 @@ namespace ft
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{ 
-					if (!(cmp(root->_value, value))) // value >= k
+					if (!(cmp(root->value(), value))) // value >= k
 					{
 						result = root;
 						root = root->left;
@@ -370,7 +375,7 @@ namespace ft
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{ 
-					if (!(cmp(root->_value, value))) // value >= k
+					if (!(cmp(root->value(), value))) // value >= k
 					{
 						result = root;
 						root = root->left;
@@ -386,7 +391,7 @@ namespace ft
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{ 
-					if (!(cmp(root->_value, value))) // value >= k
+					if (!(cmp(root->value(), value))) // value >= k
 					{
 						result = root;
 						root = root->left;
@@ -404,7 +409,7 @@ namespace ft
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{
-					if (cmp(value, root->_value)) // k < value
+					if (cmp(value, root->value())) // k < value
 					{
 						result = root;
 						root = root->left;
@@ -420,7 +425,7 @@ namespace ft
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{
-					if (cmp(value, root->_value)) // k < value
+					if (cmp(value, root->value())) // k < value
 					{
 						result = root;
 						root = root->left;
@@ -436,7 +441,7 @@ namespace ft
 				__node_pointer result = end_leaf_pointer;
 				while (root)
 				{
-					if (cmp(value, root->_value)) // k < value
+					if (cmp(value, root->value())) // k < value
 					{
 						result = root;
 						root = root->left;
@@ -800,7 +805,7 @@ namespace ft
 					// childrens > 1
 					//std::cout << "delete double child" << *n << std::endl;
 					__node_pointer tmp = find_last(n->left);
-					std::swap<value_type>(tmp->_value, n->_value);
+					std::swap<value_type>(tmp->value(), n->value());
 					erase(tmp);
 					return (it);
 				}
