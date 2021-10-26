@@ -6,7 +6,7 @@
 /*   By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/29 11:18:54 by alexmarcell       #+#    #+#             */
-/*   Updated: 2021/10/25 21:36:08 by amarcell         ###   ########.fr       */
+/*   Updated: 2021/10/26 16:26:39 by amarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,18 +137,23 @@ namespace ft
 			return ((*node).second);
 		};
 
-		// modifiers:
 		pair<iterator, bool>	insert(const value_type& v)
 			{ return (_tree.insert(v)); };
+		
 		iterator				insert(const_iterator position, const value_type& v)
-			{ /*return (_tree.insert(position, v));*/ ++position;return (_tree.insert(v));};
-		template <class InputIterator>
-			void insert(InputIterator first, InputIterator last)
 			{
-				for (const_iterator e = cend(); first != last; ++first) // needs check
-                	/*insert(e, *first);*/
-					insert(*first);
+				if (position != cend())
+					++position;
+				return (_tree.insert(v));
 			};
+		
+		template <class InputIterator>
+		void insert(InputIterator first, InputIterator last)
+		{
+			for (const_iterator e = cend(); first != last; ++first) // needs check
+				/*insert(e, *first);*/
+				insert(*first);
+		};
 
 		iterator  erase(const_iterator position)
 			{ return (_tree.erase(position)); };

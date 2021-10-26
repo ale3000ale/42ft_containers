@@ -228,12 +228,13 @@ namespace ft
 			__node_pointer create_node(value_type value, __node_pointer &parent)
 			{
 				__node_pointer node = create_node(value);
-				if (cmp(value.first, parent->_value.first))
-						parent->left = node;
-					else
-						parent->right = node;
+				if (cmp(value, parent->_value))
+					parent->left = node;
+				else
+					parent->right = node;
 
 				node->parent = parent;
+				//std::cout << "parent: " << *parent << "\nMe: " << *node << std::endl ;
 				return (node);
 			}
 
@@ -621,7 +622,10 @@ namespace ft
 						insert_case1(node);
 					}
 					else
+					{
+						end_leaf_pointer->parent->right = end_leaf_pointer;
 						return (iterator(node));
+					}
 				}
 				if (end_leaf_pointer->parent->right == node)
 				{
