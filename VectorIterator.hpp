@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef VECTORITERATOR_H__
-# define VECTORITERATOR_H__
+#ifndef VECTORITERATOR_HPP
+# define VECTORITERATOR_HPP
 
 # include "iterator.hpp"
 
@@ -118,7 +118,6 @@ namespace ft
 	};
 
 	/*---------LOGIC OPERATOR---------*/
-	//prototype because they nedd only 2 parameters
 	template <class Iter1, class Iter2>
 	bool operator==(const VectorIterator<Iter1>& vc1, const VectorIterator<Iter2>& vc2)
 	{

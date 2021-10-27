@@ -7,16 +7,6 @@
 
 namespace ft 
 {
-	/* USE STD::SWAP INSTEAD */
-	/*template <class T> 
-	void swap(T &a, T &b)
-	{
-		T tmp;
-		tmp = a;
-		a = b;
-		b = tmp;
-	}*/
-
 	template <class T, T v>
 	struct integral_constant
 	{

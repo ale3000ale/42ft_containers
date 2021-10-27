@@ -2,10 +2,8 @@
 #ifndef STACK_HPP
 # define STACK_HPP
 
-# include "iterator.hpp"
 # include "utils.hpp"
 # include "vector.hpp"
-# include <iostream>
 
 namespace ft
 {
@@ -79,7 +77,8 @@ namespace ft
 
 		template <class T1, class C1>
 		friend bool operator< (const stack<T1, C1>& x, const stack<T1, C1>& y);
-	};
+		
+	}; // class stack
 
 	/*-------------------OPERATORS-------------------*/
 			/*---------LOGIC OPERATOR---------*/
@@ -119,6 +118,6 @@ namespace ft
 	{
 		x.swap(y);
 	};
-};
+}; // namespace ft
 
 #endif

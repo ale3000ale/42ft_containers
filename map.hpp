@@ -22,13 +22,13 @@
 namespace ft
 {
 	template <class Key, class T, class Compare = less<Key>,
-		class Allocator = std::allocator< pair <Key, T> > >
+		class Allocator = std::allocator< pair <const Key, T> > >
 	class map
 	{
 	public:
 		typedef Key													key_type;
 		typedef T													mapped_type;
-		typedef pair<key_type, mapped_type>							value_type;
+		typedef pair<const key_type, mapped_type>					value_type;
 		typedef Compare												key_compare;
 		typedef Allocator											allocator_type;
 		typedef typename allocator_type::reference					reference;
@@ -74,7 +74,6 @@ namespace ft
 			{ insert(first, last); };
 		
 		map(const map& m, const allocator_type& a = allocator_type()) : _tree(m._tree, allocator_type(a)) {};
-			/* { insert(m.begin(), m.end());  why do i have to insert em if i already copy-created mine?};*/ 
 		
 		explicit map(const allocator_type& a) : _tree(allocator_type(a)) {};
 		
@@ -115,10 +114,7 @@ namespace ft
 		{
 			iterator node = find(k);
 			if (node == end())
-			{
-				//value_type v = value_type(k, mapped_type()); // dont know if it is correct
 				node = _tree.insert(_new_pair(k)).first;
-			}
 			return ((*node).second);
 		};
 
@@ -150,8 +146,7 @@ namespace ft
 		template <class InputIterator>
 		void insert(InputIterator first, InputIterator last)
 		{
-			for (const_iterator e = cend(); first != last; ++first) // needs check
-				/*insert(e, *first);*/
+			for (const_iterator e = cend(); first != last; ++first)
 				insert(*first);
 		};
 

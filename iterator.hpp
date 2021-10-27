@@ -31,7 +31,6 @@ namespace ft
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
-
 	// define the iterator mask traits
 	template<class Category, class T, class Distance = ptrdiff_t,
          class Pointer = T*, class Reference = T&>
@@ -151,7 +150,7 @@ namespace ft
 		{
 			return it;
 		}
-	};
+	}; // class reverse_iterator
 
 	/*---------LOGIC OPERATOR---------*/
 	template <class Iter1, class Iter2>
@@ -201,8 +200,6 @@ namespace ft
 	{
 		return (reverse_iterator<Iter>(x.base() - n));
 	}
-};
-
-
+}; // namespace ft
 
 #endif

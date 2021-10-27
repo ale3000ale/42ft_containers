@@ -54,7 +54,12 @@ namespace ft
 			vector& operator=(const vector& x)
 			{
 				if (&x != this)
-					assign(x.begin(), x.end());
+				{
+					clear();
+					const_iterator it(x.begin());
+					for ( ;it != x.end();++it)
+						push_back(*it);
+				}
 				return (*this);
 			};
 
@@ -64,7 +69,7 @@ namespace ft
 				assign(InputIterator first, InputIterator last)
 				{	
 					clear();
-					insert(begin(), first, last);				
+					insert(begin(), first, last);	
 				};
 			void assign (size_type n, const_reference u)
 			{
@@ -263,7 +268,7 @@ namespace ft
 			template <class InputIterator>
 				typename enable_if <!is_integral<InputIterator>::value, iterator>::type
 				insert(iterator position, InputIterator first, InputIterator last)
-				{
+				{	
 					if (first != last)
 					{
 						InputIterator it = last;
@@ -292,7 +297,10 @@ namespace ft
 
 			void clear()
 			{
-				erase(begin(), end());
+				iterator it(_array);
+				for ( ;it != end();++it)
+					_alloc.destroy(it.base());
+				_size = 0;
 			};
 			void resize(size_type sz, const value_type& c = value_type())
 			{

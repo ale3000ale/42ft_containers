@@ -16,7 +16,6 @@
 # include "utils.hpp"
 # include <memory> // for std::allocator
 
-
 namespace ft
 {
 	# define COLOR_OFF			"\033[0m"
@@ -37,7 +36,7 @@ namespace ft
 			__node_type_pointer					left;
 			__node_type_pointer					right;
 			__node_type_pointer         		parent;
-			bool								is_black;
+			bool								color;
 
 			void __set_parent(__node_type_pointer _p)
 			{
@@ -48,59 +47,37 @@ namespace ft
 
 		public:
 			binary_node(): 
-				_value(nullptr), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
+				_value(nullptr), left(nullptr), right(nullptr), parent(nullptr), color(false)
 			{}
 
 			binary_node(__value_type *_content) : 
-				_value(_content), left(nullptr), right(nullptr), parent(nullptr), is_black(false)
+				_value(_content), left(nullptr), right(nullptr), parent(nullptr), color(false)
 			{}
 
-			binary_node(__node_type_pointer _parent): parent(_parent), is_black(false)
+			binary_node(__node_type_pointer _parent): parent(_parent), color(false)
 			{
 			}
 
 			binary_node(__value_type *_content, __node_type &_parent) : 
-				_value(_content), parent(&_parent), is_black(false)
+				_value(_content), parent(&_parent), color(false)
 			{}
 
 			binary_node(__value_type *_content, __node_type &_parent, __node_type &_left, __node_type &_right) : 
-				_value(_content), left(&_left), right(&_right), parent(&_parent), is_black(false)
+				_value(_content), left(&_left), right(&_right), parent(&_parent), color(false)
 			{}
 
 			binary_node(__value_type *_content, __node_type &_left, __node_type &_right) : 
-				_value(_content),  left(&_left), right(&_right), is_black(false)
+				_value(_content),  left(&_left), right(&_right), color(false)
 			{}
 			
-			/*binary_node(__node_type const &node)
-			{
-				*this = node;
-			}	*/		
-
-			/*binary_node& operator=(binary_node const& nd) const
-			{
-				if (this != &nd)
-				{
-					left = nd.left;
-					right = nd.right;
-					parent = nd.parent;
-
-					_value = nd._value; // no deeep copy
-					is_black = nd.is_black;
-				}
-				return (*this);
-			}*/
 			~binary_node(){};
 
-			/*__value_type value()
-			{
-				return (_value);
-			}*/
-	};
+	}; // class binary_node
 
 	template <class T>
 	std::ostream &operator<<(std::ostream &out, binary_node<T> &node)
 	{
-		if (node.is_black)
+		if (node.color)
 			out<< BWHITE;
 		else
 			out<< BRED;
@@ -114,43 +91,41 @@ namespace ft
 		return (out);
 	}
 
-	/* tutto da rifare con value() */
-
 	template <class T>
-	bool operator==(const binary_node<T>& __x, const binary_node<T>& __y)
+	bool operator==(const binary_node<T>& x, const binary_node<T>& y)
 	{
-		return __x.value() == __y.value();
+		return (x.value() == y.value());
 	}
 
 	template <class T>
-	bool operator!=(const binary_node<T>& __x, const binary_node<T>& __y)
+	bool operator!=(const binary_node<T>& x, const binary_node<T>& y)
 	{
-		return !(__x == __y);
+		return (!(x == y));
 	}
 
 	template <class T>
-	bool operator< (const binary_node<T>& __x, const binary_node<T>& __y)
+	bool operator< (const binary_node<T>& x, const binary_node<T>& y)
 	{
-		return __x.value() < __y.value();
+		return (x.value() < y.value());
 	}
 
 	template <class T>
-	bool operator> (const binary_node<T>& __x, const binary_node<T>& __y)
+	bool operator> (const binary_node<T>& x, const binary_node<T>& y)
 	{
-		return __y < __x;
+		return (y < x);
 	}
 
 	template <class T>
-	bool operator>=(const binary_node<T>& __x, const binary_node<T>& __y)
+	bool operator>=(const binary_node<T>& x, const binary_node<T>& y)
 	{
-		return !(__x < __y);
+		return (!(x < y));
 	}
 
 	template <class T>
-	bool operator<=(const binary_node<T>& __x, const binary_node<T>& __y)
+	bool operator<=(const binary_node<T>& x, const binary_node<T>& y)
 	{
-		return !(__y < __x);
+		return (!(y < x));
 	}
-};
+}; // namespace ft
 
 #endif
