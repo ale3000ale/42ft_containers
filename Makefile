@@ -6,7 +6,7 @@
 #    By: amarcell <amarcell@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/07/13 15:26:08 by amarcell          #+#    #+#              #
-#    Updated: 2021/10/25 22:00:49 by amarcell         ###   ########.fr        #
+#    Updated: 2021/10/28 16:13:29 by amarcell         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -94,7 +94,7 @@ $(NAME):	$(OBJS)
 			@ $(CPP) $(CFLAGS) $(OBJS) -D STL -o stl.out 
 			@ echo $(BGREEN) "$(NAME) and stl.out compiled successfully ✅" $(COLOR_OFF)
 
-run_test:	
+run_test:	$(NAME)
 			@ echo $(BYELLOW) " --- output from FT tests ---" $(COLOR_OFF)
 			@ ./$(NAME) 2
 			@ echo $(BYELLOW) " --- output from STD tests ---" $(COLOR_OFF)
@@ -127,7 +127,7 @@ re-debug:	fclean debug
 
 leaks:		
 			@ echo $(LEAKS_COLOR) "[... Finding leaks in $(NAME) ⛳️ ...]" 
-			@ leaks --atExit -- ./$(NAME)
+			@ leaks --atExit -- ./$(NAME) 2
 
 TEST =  @ cd containers_test &&  ./do.sh
 test_all:	
