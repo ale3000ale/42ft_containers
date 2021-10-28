@@ -55,9 +55,9 @@ OBJS_DIR	=		objs
 
 OBJS_DEBUG_DIR	=	objs_debug
 
-HPPS		=		VectorIterator.hpp		# your h++ file or nothing, works equally
+HPPS		=	    		# your h++ file or nothing, works equally
 
-SRCS		=		test.cpp # your c++ file
+SRCS		=		main.cpp # your c++ file
 
 EXTRA_CLEAN	=		 # extra file do u want delete					
 				
@@ -91,7 +91,14 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			@ $(CPP) $(CFLAGS) $(OBJS) -o $@
-			@ echo $(BGREEN) "$(NAME) compiled successfully ✅" $(COLOR_OFF)
+			@ $(CPP) $(CFLAGS) $(OBJS) -D STL -o stl.out 
+			@ echo $(BGREEN) "$(NAME) and stl.out compiled successfully ✅" $(COLOR_OFF)
+
+run_test:	
+			@ echo $(BYELLOW) " --- output from FT tests ---" $(COLOR_OFF)
+			@ ./$(NAME) 2
+			@ echo $(BYELLOW) " --- output from STD tests ---" $(COLOR_OFF)
+			@ ./stl.out 2
 
 clean:
 			@ rm -f $(OBJS)
@@ -103,6 +110,7 @@ fclean:		clean
 			@ rm -rf $(OBJS_DIR)
 			@ rm -rf $(OBJS_DEBUG_DIR)
 			@ rm -f $(NAME)
+			@ rm -f stl.out
 			@ echo $(BWHITE) "$(NAME) file was successfully deleted 🗂 ➡🗑" $(COLOR_OFF)
 
 re:			fclean all

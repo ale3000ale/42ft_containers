@@ -37,7 +37,7 @@ namespace ft
 			/*-------------------CONSTRUCTURS-------------------*/
 			VectorIterator() : ptr(nullptr) {}
 			template <class U>
-				VectorIterator(VectorIterator<U> const & other) : ptr(other.ptr) {}
+				VectorIterator(VectorIterator<U> const & other) : ptr(other.base()) {}
 			~VectorIterator(){}
 
 			/*-------------------OPERATORS-------------------*/
@@ -114,7 +114,6 @@ namespace ft
 				return (ptr);
 			}
 		template <class T, class Allocator> friend class vector;
-		template <class U> friend class VectorIterator;
 	};
 
 	/*---------LOGIC OPERATOR---------*/

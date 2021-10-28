@@ -6,7 +6,6 @@
 # include "pair.hpp"
 # include "TreeIterator.hpp"
 # include <memory> // for std::allocator
-# include <limits>
 
 namespace ft
 {
@@ -71,7 +70,7 @@ namespace ft
 			typedef binary_node<value_type>*					__node_pointer;
 			typedef __node_pointer								__parent_pointer;
 			typedef __node_pointer								__iter_pointer;
-			typedef std::allocator<__node>						node_allocator;
+			typedef typename value_allocator::template rebind<__node>::other node_allocator;
 			typedef typename node_allocator::difference_type	difference_type;
 			typedef typename node_allocator::size_type       	size_type;
 
@@ -105,7 +104,7 @@ namespace ft
 				cmp(__comp), value_alloc(__a), root_pointer(nullptr), end_leaf_pointer(create_node(root_pointer)), _size(0)
 			{
 			};
-			base_tree(const base_tree& __t, const value_allocator& __a = value_allocator())
+			base_tree(const base_tree& __t, const value_allocator& __a = value_allocator()) : root_pointer(nullptr)
 			{
 				value_alloc = __a;
 				*this = __t;
@@ -188,7 +187,7 @@ namespace ft
 
 			size_type max_size() const
 			{
-				return (value_alloc.max_size());
+				return (node_alloc.max_size());
 			};
 
 			node_allocator & _node_allocator() const

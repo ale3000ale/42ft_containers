@@ -56,6 +56,13 @@ namespace ft
 				if (&x != this)
 				{
 					clear();
+					if (_capacity < x._size)
+					{
+						if (_array)
+							_alloc.deallocate(_array, _capacity);
+						_array = _alloc.allocate(x._size);
+						_capacity = x._size;
+					}
 					const_iterator it(x.begin());
 					for ( ;it != x.end();++it)
 						push_back(*it);
